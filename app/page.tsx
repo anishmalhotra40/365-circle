@@ -1,119 +1,57 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { ArrowRight, Linkedin, FileText, ChevronDown, Award, Users, Calendar } from "lucide-react"
+import { ArrowRight, ChevronDown, Award, Users, Calendar } from "lucide-react"
 import Navigation from "@/components/navigation"
 import ContactModal from "@/components/contact-modal"
 import ContactForm from "@/components/contact-form"
 import Logo from "@/components/logo"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
+import { TextHoverEffect } from "@/components/text-hover"
+import Connections from "@/components/connections";
 
-const featuredProfessionals = [
-	{
-		name: "Johnathan Doe",
-		title: "AI Researcher",
-		imageUrl: "/placeholder.svg?height=100&width=100",
-		linkedinUrl: "#",
-		pdfUrl: "#",
-		industry: "Artificial Intelligence",
-		description: "Pioneering new frontiers in machine learning and neural networks.",
-	},
-	{
-		name: "Jane Smith",
-		title: "UX Designer",
-		imageUrl: "/placeholder.svg?height=100&width=100",
-		linkedinUrl: "#",
-		industry: "Design",
-		description: "Crafting intuitive and beautiful user experiences for web and mobile.",
-	},
-	{
-		name: "Sam Wilson",
-		title: "Growth Hacker",
-		imageUrl: "/placeholder.svg?height=100&width=100",
-		pdfUrl: "#",
-		industry: "Marketing",
-		description: "Driving business growth through innovative marketing strategies.",
-	},
-	{
-		name: "Emily White",
-		title: "Data Scientist",
-		imageUrl: "/placeholder.svg?height=100&width=100",
-		linkedinUrl: "#",
-		pdfUrl: "#",
-		industry: "Data Science",
-		description: "Turning complex data into actionable insights and solutions.",
-	},
-	{
-		name: "Michael Brown",
-		title: "AI Ethicist",
-		imageUrl: "/placeholder.svg?height=100&width=100",
-		linkedinUrl: "#",
-		industry: "Artificial Intelligence",
-		description: "Ensuring artificial intelligence is developed and used ethically.",
-	},
-	{
-		name: "Sarah Davis",
-		title: "Product Designer",
-		imageUrl: "/placeholder.svg?height=100&width=100",
-		pdfUrl: "#",
-		industry: "Design",
-		description: "Leading the creation of user-centric and successful products.",
-	},
-]
-
+// FAQ data
 const faqItems = [
 	{
 		question: "What is 365 Circle?",
-		answer: "365 Circle is a community-driven initiative to connect with 365 people in 365 days, sharing their stories to inspire and build networks.",
+		answer:
+			"365 Circle is a community-driven initiative to connect with 365 people in 365 days, sharing their stories to inspire and build networks.",
 	},
 	{
 		question: "How can I be featured?",
-		answer: "You can apply to be featured by filling out our contact form. We are looking for unique stories that can empower and motivate others.",
+		answer:
+			"You can apply to be featured by filling out our contact form. We are looking for unique stories that can empower and motivate others.",
 	},
 	{
 		question: "What are the benefits of becoming a member?",
-		answer: "Members get access to exclusive networking events, a supportive community, and opportunities to collaborate with professionals from various industries.",
+		answer:
+			"Members get access to exclusive networking events, a supportive community, and opportunities to collaborate with professionals from various industries.",
 	},
 	{
 		question: "Are the networking events virtual or in-person?",
-		answer: "We host a mix of both virtual and in-person events to cater to our global community. Event details are shared with members in advance.",
+		answer:
+			"We host a mix of both virtual and in-person events to cater to our global community. Event details are shared with members in advance.",
 	},
-]
+];
 
 export default function HomePage() {
-	const [isModalOpen, setIsModalOpen] = useState(false)
-	const [modalType, setModalType] = useState<"featured" | "member" | "event" | null>(null)
-	const [selectedIndustry, setSelectedIndustry] = useState("All")
-	const [filteredProfessionals, setFilteredProfessionals] = useState(featuredProfessionals)
-
-	const industries = ["All", ...Array.from(new Set(featuredProfessionals.map(p => p.industry)))]
-
-	useEffect(() => {
-		if (selectedIndustry === "All") {
-			setFilteredProfessionals(featuredProfessionals)
-		} else {
-			setFilteredProfessionals(featuredProfessionals.filter(p => p.industry === selectedIndustry))
-		}
-	}, [selectedIndustry])
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [modalType, setModalType] = useState<"featured" | "member" | "event" | null>(null);
 
 	const openModal = (type: "featured" | "member" | "event") => {
-		setModalType(type)
-		setIsModalOpen(true)
-	}
+		setModalType(type);
+		setIsModalOpen(true);
+	};
 
 	return (
 		<div className="bg-white text-blue-900 font-sans">
 			<Navigation />
 			<ContactModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} type={modalType} />
 
-			{/* Home Section */}
+			{/* Hero Section */}
 			<section id="home" className="min-h-screen flex items-center justify-center text-center relative overflow-hidden">
 				<Image
 					alt="Hero background"
@@ -142,6 +80,11 @@ export default function HomePage() {
 				</a>
 			</section>
 
+			{/* Marquee Banner */}
+			<div className="w-full">
+				<TextHoverEffect />
+			</div>
+
 			{/* About Us Section */}
 			<section id="about" className="py-20 md:py-32">
 				<div className="container mx-auto px-4">
@@ -164,71 +107,10 @@ export default function HomePage() {
 				</div>
 			</section>
 
-			{/* Connections Across Industry Section */}
-			<section id="connections" className="py-20 md:py-32 bg-blue-50/50">
-				<div className="container mx-auto px-4">
-					<div className="text-center mb-12">
-						<h2 className="text-4xl font-bold tracking-tight text-blue-900">Connections Across Industry</h2>
-						<p className="text-lg text-blue-800/80 mt-2 max-w-xl mx-auto">
-							Discover professionals from various fields and filter by industry.
-						</p>
-					</div>
-					<div className="max-w-6xl mx-auto">
-						<div className="flex justify-end mb-12">
-							<DropdownMenu>
-								<DropdownMenuTrigger asChild>
-									<Button
-										variant="outline"
-										className="px-6 py-3 text-sm font-medium transition-all duration-300 rounded-full bg-white border-blue-200 text-blue-700 hover:bg-blue-50"
-									>
-										Filter by Industry: <span className="font-semibold ml-2">{selectedIndustry}</span>
-										<ChevronDown className="w-4 h-4 ml-2" />
-									</Button>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent align="end">
-									{industries.map(industry => (
-										<DropdownMenuItem key={industry} onSelect={() => setSelectedIndustry(industry)}>
-											{industry}
-										</DropdownMenuItem>
-									))}
-								</DropdownMenuContent>
-							</DropdownMenu>
-						</div>
-						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-							{filteredProfessionals.map((prof, index) => (
-								<Card key={index} className="group rounded-2xl border-blue-100 shadow-sm hover:shadow-xl transition-shadow duration-300 text-center">
-									<CardContent className="p-6">
-										<Avatar className="w-24 h-24 mx-auto mb-4 border-4 border-white shadow-lg">
-											<AvatarImage src={prof.imageUrl} className="object-cover" />
-											<AvatarFallback className="bg-blue-100 text-blue-500 text-4xl">
-												{prof.name.charAt(0)}
-											</AvatarFallback>
-										</Avatar>
-										<Badge variant="outline" className="mb-2">{prof.industry}</Badge>
-										<h3 className="text-xl font-bold text-blue-900">{prof.name}</h3>
-										<p className="text-blue-600">{prof.title}</p>
-										<p className="text-sm text-gray-500 mt-3">{prof.description}</p>
-										<div className="flex justify-center gap-4 mt-4">
-											{prof.linkedinUrl && (
-												<a href={prof.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700">
-													<Linkedin className="w-6 h-6" />
-												</a>
-											)}
-											{prof.pdfUrl && (
-												<a href={prof.pdfUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700">
-													<FileText className="w-6 h-6" />
-												</a>
-											)}
-										</div>
-									</CardContent>
-								</Card>
-							))}
-						</div>
-					</div>
-				</div>
-			</section>
+			{/* Connections Section */}
+			<Connections />
 
-			{/* Call to Action Sections */}
+			{/* Call to Action Section */}
 			<section id="get-involved" className="py-20 md:py-32">
 				<div className="container mx-auto px-4">
 					<div className="text-center mb-16">
@@ -325,5 +207,5 @@ export default function HomePage() {
 				</div>
 			</footer>
 		</div>
-	)
+	);
 }
