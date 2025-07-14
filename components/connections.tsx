@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 import { ChevronDown, ChevronLeft, ChevronRight, Linkedin, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 // Data array (truncated for brevity, use the full array in your code)
 const connectionsData = [
@@ -1817,7 +1817,13 @@ const Connections = () => {
               </div>
               {/* Hover Image/Overlay */}
               <div className="absolute inset-0 flex flex-col justify-end items-center transition-opacity duration-300 opacity-0 group-hover:opacity-100 z-20">
-                <img src={imageUrl} alt={prof["Name"]} className="object-cover w-full h-full absolute inset-0 group-hover:opacity-60 transition-opacity duration-300" />
+                <Image
+                  src={imageUrl}
+                  alt={prof["Name"]}
+                  fill
+                  className="object-cover group-hover:opacity-60 transition-opacity duration-300"
+                  priority={index < 4}
+                />
                 {/* Darker gradient overlay */}
                 <div className="absolute inset-0 pointer-events-none" style={{background: "linear-gradient(180deg, rgba(20,30,60,0) 0%, rgba(20,30,60,0.85) 100%)"}} />
                 <div className="w-full pb-8 pt-16 flex flex-col items-center justify-end absolute bottom-0 left-0">
