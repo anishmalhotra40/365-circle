@@ -25,10 +25,6 @@ export default function ContactModal({
   isOpen, 
   onClose, 
   type,
-  buttonText = "Contact Us",
-  buttonVariant = "default",
-  buttonSize = "default",
-  className = "" 
 }: ContactModalProps) {
   const [formData, setFormData] = useState({
     name: "",
@@ -286,7 +282,7 @@ export default function ContactModal({
                     Industry-Specific Events
                   </SelectItem>
                   <SelectItem value="sip-slurp">
-                    Sip & Slurp Gatherings
+                    Sip &amp; Slurp Gatherings
                   </SelectItem>
                   <SelectItem value="all">
                     All Events

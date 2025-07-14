@@ -157,7 +157,7 @@ export default function HomePage() {
 					<div className="mt-16 max-w-4xl mx-auto">
 						<div className="bg-blue-50/50 p-10 rounded-2xl shadow-sm">
 							<blockquote className="text-center text-xl md:text-2xl font-medium text-blue-900 leading-relaxed">
-								"We believe every person has a story worth sharing. A story that can spark an idea, offer a new perspective, or change a life."
+								&ldquo;We believe every person has a story worth sharing. A story that can spark an idea, offer a new perspective, or change a life.&rdquo;
 							</blockquote>
 						</div>
 					</div>
