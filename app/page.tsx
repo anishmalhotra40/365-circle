@@ -4,38 +4,16 @@ import { useState } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { ArrowRight, ChevronDown, Award, Users, Calendar } from "lucide-react"
 import Navigation from "@/components/navigation"
 import ContactModal from "@/components/contact-modal"
 import ContactForm from "@/components/contact-form"
-import Logo from "@/components/logo"
 import { TextHoverEffect } from "@/components/text-hover"
-import Connections from "@/components/connections";
+import FaqSection from "@/components/FAQ"
+import Footer from "@/components/Footer"
+import AboutUsSection from "@/components/about"
 
-// FAQ data
-const faqItems = [
-	{
-		question: "What is 365 Circle?",
-		answer:
-			"365 Circle is a community-driven initiative to connect with 365 people in 365 days, sharing their stories to inspire and build networks.",
-	},
-	{
-		question: "How can I be featured?",
-		answer:
-			"You can apply to be featured by filling out our contact form. We are looking for unique stories that can empower and motivate others.",
-	},
-	{
-		question: "What are the benefits of becoming a member?",
-		answer:
-			"Members get access to exclusive networking events, a supportive community, and opportunities to collaborate with professionals from various industries.",
-	},
-	{
-		question: "Are the networking events virtual or in-person?",
-		answer:
-			"We host a mix of both virtual and in-person events to cater to our global community. Event details are shared with members in advance.",
-	},
-];
+
 
 export default function HomePage() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -86,29 +64,7 @@ export default function HomePage() {
 			</div>
 
 			{/* About Us Section */}
-			<section id="about" className="py-20 md:py-32">
-				<div className="container mx-auto px-4">
-					<div className="max-w-3xl mx-auto text-center">
-						<h2 className="text-base font-semibold text-blue-600 tracking-wider uppercase">Our Mission</h2>
-						<p className="mt-2 text-4xl md:text-5xl font-extrabold text-blue-900 tracking-tight">
-							Connecting People, One Story at a Time
-						</p>
-						<p className="mt-6 max-w-2xl mx-auto text-lg text-blue-800/80">
-							Our mission is simple yet powerful: connect with 365 incredible people in 365 days to share their unique stories, foster inspiration, and build meaningful networks. We highlight stories that empower, motivate, and encourage others to dream bigger.
-						</p>
-					</div>
-					<div className="mt-16 max-w-4xl mx-auto">
-						<div className="bg-blue-50/50 p-10 rounded-2xl shadow-sm">
-							<blockquote className="text-center text-xl md:text-2xl font-medium text-blue-900 leading-relaxed">
-								&ldquo;We believe every person has a story worth sharing. A story that can spark an idea, offer a new perspective, or change a life.&rdquo;
-							</blockquote>
-						</div>
-					</div>
-				</div>
-			</section>
-
-			{/* Connections Section */}
-			<Connections />
+			<AboutUsSection />
 
 			{/* Call to Action Section */}
 			<section id="get-involved" className="py-20 md:py-32">
@@ -165,47 +121,12 @@ export default function HomePage() {
 			</section>
 
 			{/* FAQ Section */}
-			<section id="faq" className="py-20 md:py-32">
-				<div className="container mx-auto px-4">
-					<div className="max-w-3xl mx-auto">
-						<div className="text-center mb-12">
-							<h2 className="text-4xl font-bold tracking-tight text-blue-900">Frequently Asked Questions</h2>
-						</div>
-						<Accordion type="single" collapsible className="w-full">
-							{faqItems.map((item, index) => (
-								<AccordionItem key={index} value={`item-${index}`} className="border-b-blue-100">
-									<AccordionTrigger className="text-lg font-medium text-blue-900 hover:no-underline">
-										{item.question}
-									</AccordionTrigger>
-									<AccordionContent className="text-base text-blue-800/80">
-										{item.answer}
-									</AccordionContent>
-								</AccordionItem>
-							))}
-						</Accordion>
-					</div>
-				</div>
-			</section>
+			<FaqSection />
 
 			<ContactForm />
 
 			{/* Footer */}
-			<footer id="footer" className="py-12 bg-blue-900 text-white">
-				<div className="container mx-auto px-4 text-center">
-					<div className="flex justify-center items-center mb-4">
-						<Logo size="small" light />
-						<span className="ml-3 text-2xl font-bold">365 Circle</span>
-					</div>
-					<p className="mb-4">Capturing Stories, Creating Connections, Inspiring Lives.</p>
-					<div className="flex justify-center gap-6 mb-6">
-						<a href="#" className="hover:text-blue-300">LinkedIn</a>
-						<a href="#" className="hover:text-blue-300">Twitter</a>
-						<a href="#" className="hover:text-blue-300">Instagram</a>
-					</div>
-					<p className="text-sm text-blue-200">Powered by TransCurators</p>
-					<p className="text-xs text-blue-300 mt-2">&copy; {new Date().getFullYear()} 365 Circle. All Rights Reserved.</p>
-				</div>
-			</footer>
+			<Footer />
 		</div>
 	);
 }
