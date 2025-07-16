@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
+import { createClient } from "@/lib/supabase/client"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -39,6 +40,10 @@ export default function ContactModal({
     interests: [] as string[],
     eventPreference: "",
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+
+  const supabase = createClient()
 
   const getModalContent = () => {
     switch (type) {
@@ -71,25 +76,110 @@ export default function ContactModal({
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission here
-    console.log("Form submitted:", { type, ...formData })
-    onClose()
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      password: type === "admin" ? "" : undefined,
-      phone: "",
-      company: "",
-      title: "",
-      industry: "",
-      message: "",
-      experience: "",
-      interests: [],
-      eventPreference: "",
-    })
+    setIsSubmitting(true)
+    setSubmitError(null)
+    
+    try {
+      if (type === "member") {
+        // Check if email already exists
+        const { data: existingMember, error: checkError } = await supabase
+          .from('members')
+          .select('id')
+          .eq('email', formData.email)
+          .single()
+
+        if (checkError && checkError.code !== 'PGRST116') {
+          // PGRST116 is "not found" error, which is expected for new members
+          throw checkError
+        }
+
+        if (existingMember) {
+          setSubmitError('A member with this email already exists.')
+          return
+        }
+
+        // Insert new member
+        const { error: insertError } = await supabase
+          .from('members')
+          .insert([{
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone || null,
+            company: formData.company || null,
+            title: formData.title || null,
+            industry: formData.industry || null,
+            interests: formData.interests.length > 0 ? formData.interests : null
+          }])
+
+        if (insertError) {
+          throw insertError
+        }
+
+        alert('Welcome to The 365 Circle! You have successfully joined the waitlist.')
+      } else if (type === "featured") {
+        // Check if email already exists for featured submissions
+        const { data: existingFeatured, error: checkError } = await supabase
+          .from('featured_submissions')
+          .select('id')
+          .eq('email', formData.email)
+          .single()
+
+        if (checkError && checkError.code !== 'PGRST116') {
+          throw checkError
+        }
+
+        if (existingFeatured) {
+          setSubmitError('You have already submitted a featured application with this email.')
+          return
+        }
+
+        // Insert new featured submission
+        const { error: insertError } = await supabase
+          .from('featured_submissions')
+          .insert([{
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone || null,
+            company: formData.company || null,
+            title: formData.title || null,
+            industry: formData.industry || null,
+            experience: formData.experience
+          }])
+
+        if (insertError) {
+          throw insertError
+        }
+
+        alert('Thank you for your featured application! We will review your submission and get back to you soon.')
+      } else {
+        // Handle other form types (event, etc.)
+        console.log("Form submitted:", { type, ...formData })
+        alert('Thank you for your submission! We will get back to you soon.')
+      }
+
+      onClose()
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        password: type === "admin" ? "" : undefined,
+        phone: "",
+        company: "",
+        title: "",
+        industry: "",
+        message: "",
+        experience: "",
+        interests: [],
+        eventPreference: "",
+      })
+    } catch (error) {
+      console.error('Error submitting form:', error)
+      setSubmitError(error instanceof Error ? error.message : 'An error occurred while submitting the form.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleInterestChange = (interest: string, checked: boolean) => {
@@ -292,34 +382,28 @@ export default function ContactModal({
             </div>
           )}
 
-          <div className="space-y-2">
-            <Label htmlFor="message" className="text-blue-800 font-medium">
-              Additional Message
-            </Label>
-            <Textarea
-              id="message"
-              value={formData.message}
-              onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
-              rows={3}
-              placeholder="Tell us more about yourself or any specific questions you have..."
-              className="border-blue-300 focus:border-blue-500"
-            />
-          </div>
+          {submitError && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-red-600 text-sm">{submitError}</p>
+            </div>
+          )}
 
           <div className="flex gap-3 pt-4">
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
+              disabled={isSubmitting}
               className="flex-1 border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white border-0"
+              disabled={isSubmitting}
+              className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white border-0 disabled:opacity-50"
             >
-              {content.submitText}
+              {isSubmitting ? 'Submitting...' : content.submitText}
             </Button>
           </div>
         </form>
