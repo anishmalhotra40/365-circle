@@ -1,12 +1,14 @@
 "use client"
 
+import { useRouter } from "next/navigation"
+import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/dropdown-menu"
 import { MoreHorizontal, PlusCircle } from "lucide-react"
-import Logo from "@/components/logo"
+import Image from "next/image"
 
 const dummyConnections = [
   { id: 1, name: "Johnathan Doe", title: "AI Researcher", status: "Published", dateAdded: "2023-10-26" },
@@ -22,15 +24,24 @@ const dummyEvents = [
 ];
 
 export default function AdminPage() {
+  const router = useRouter()
+  const supabase = createClient()
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    router.push("/login")
+    router.refresh()
+  }
+
   return (
     <div className="min-h-screen bg-blue-50/50 font-sans text-blue-900">
-      <header className="bg-white border-b border-blue-100 sticky top-0 z-40">
+      <header className="bg-blue-300 border-b border-blue-100 sticky top-0 z-40">
         <div className="container mx-auto flex justify-between items-center p-4">
           <div className="flex items-center gap-3">
-            <Logo size="small" />
+            <Image src="/logo.png" alt="The 365 Circle Logo" width={40} height={40} className="h-10 w-auto" />
             <span className="font-bold text-blue-800 text-xl">Admin Portal</span>
           </div>
-          <Button variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700">
+          <Button onClick={handleLogout} variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700">
             Logout
           </Button>
         </div>
