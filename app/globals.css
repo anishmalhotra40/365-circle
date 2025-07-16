@@ -139,6 +139,17 @@
   animation: blink-star 1.2s infinite;
 }
 
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-scroll {
+  display: flex;
+  animation: scroll 30s linear infinite;
+}
+
+
 /* Fade-in for scroll-to-top button */
 @keyframes fade-in-up {
   0% {

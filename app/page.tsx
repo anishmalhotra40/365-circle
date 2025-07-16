@@ -12,6 +12,7 @@ import { TextHoverEffect } from "@/components/text-hover"
 import FaqSection from "@/components/FAQ"
 import Footer from "@/components/Footer"
 import AboutUsSection from "@/components/about"
+import BrandCarousel from "@/components/brand-carousel"
 
 
 
@@ -96,7 +97,7 @@ export default function HomePage() {
 
 			{/* About Us Section */}
 			<div><AboutUsSection /></div>
-
+			
 			{/* Call to Action Section */}
 			<section id="get-involved" className="py-20 md:py-32">
 				<div className="container mx-auto px-4">
@@ -153,6 +154,8 @@ export default function HomePage() {
 
 			{/* FAQ Section */}
 			<FaqSection />
+
+			<BrandCarousel />
 
 			<ContactForm />
 
