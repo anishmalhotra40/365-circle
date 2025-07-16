@@ -5,7 +5,6 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu, ChevronDown, Users, Star, UserPlus, CalendarDays } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { usePathname } from "next/navigation"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/dropdown-menu"
 
 const navItems = [
@@ -31,7 +30,6 @@ export default function Navigation() {
 	const [isInHero, setIsInHero] = useState(true)
 
 	const router = useRouter()
-	const pathname = usePathname();
 
 	useEffect(() => {
 		const handleScroll = () => {
