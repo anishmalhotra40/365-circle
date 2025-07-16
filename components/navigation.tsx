@@ -5,6 +5,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu, ChevronDown, Users, Star, UserPlus, CalendarDays } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/dropdown-menu"
 
 const navItems = [
@@ -30,6 +31,7 @@ export default function Navigation() {
 	const [isInHero, setIsInHero] = useState(true)
 
 	const router = useRouter()
+	const pathname = usePathname();
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -82,7 +84,7 @@ export default function Navigation() {
 				}`}
 			>
 				<div className="flex justify-between items-center">
-					<Image src="/logo.png" alt="The 365 Circle Logo" width={500} height={400} className="h-10 w-auto" />
+					<Image src="/logo.png" alt="The 365 Circle Logo" width={500} height={400} className="h-10 w-auto drop-shadow-lg" />
 
 					<DesktopNav activeSection={activeSection} isInHero={isInHero} handleNavigation={handleNavigation} />
 

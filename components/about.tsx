@@ -4,7 +4,7 @@ import Image from "next/image"
 
 export default function AboutUsSection() {
 	return (
-		<section id="about" className="pt-16 md:pt-24 pb-10 overflow-hidden bg-white">
+		<section id="about" className="pt-8 md:pt-12 pb-8 overflow-hidden bg-white">
 			<div className="relative mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-12 md:gap-20 max-w-5xl">
 				
 				{/* Left: Text Content */}

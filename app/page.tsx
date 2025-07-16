@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,6 +18,20 @@ import AboutUsSection from "@/components/about"
 export default function HomePage() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [modalType, setModalType] = useState<"featured" | "member" | "event" | null>(null);
+ 	const [showScrollTop, setShowScrollTop] = useState(false);
+
+ 	useEffect(() => {
+ 		const handleScroll = () => {
+ 			const hero = document.getElementById("home");
+ 			if (hero) {
+ 				const rect = hero.getBoundingClientRect();
+ 				setShowScrollTop(rect.bottom < 0);
+ 			}
+ 		};
+ 		window.addEventListener("scroll", handleScroll);
+ 		handleScroll();
+ 		return () => window.removeEventListener("scroll", handleScroll);
+ 	}, []);
 
 	const openModal = (type: "featured" | "member" | "event") => {
 		setModalType(type);
@@ -40,6 +54,23 @@ export default function HomePage() {
 				/>
 				<div className="absolute inset-0 bg-gradient-to-r from-[#000000] via-[#000000]/10 to-[#000000] z-10"></div>
 				<div className="container mx-auto px-4 z-20 animate-fade-in-up">
+					{/* Glassmorphic, blinking capsule */}
+					<div className="flex justify-center mb-6">
+						<a
+							href="https://www.transcurators.com/"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="px-6 py-2 rounded-full backdrop-blur-md bg-blue-600/10 border border-white/30 shadow-lg text-white font-semibold text-sm flex items-center gap-1"
+							style={{
+								boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+								border: '1px solid rgba(255, 255, 255, 0.3)',
+							}}
+						>
+							<span className="w-3 h-3 rounded-full bg-blue-500 relative mr-2 animate-pulse-blue"></span>
+							<span>Powered by</span>
+							<span className="font-bold">TransCurators</span>
+						</a>
+					</div>
 					<div className="max-w-4xl mx-auto">
 						<h1 className="text-5xl md:text-7xl font-extrabold text-white tracking-tighter mb-4">
 							Capturing Stories, Creating Connections.
@@ -64,7 +95,7 @@ export default function HomePage() {
 			</div>
 
 			{/* About Us Section */}
-			<AboutUsSection />
+			<div><AboutUsSection /></div>
 
 			{/* Call to Action Section */}
 			<section id="get-involved" className="py-20 md:py-32">
@@ -127,6 +158,18 @@ export default function HomePage() {
 
 			{/* Footer */}
 			<Footer />
+			{/* Scroll to Top Button */}
+			{showScrollTop && (
+				<button
+					className="fixed bottom-24 right-6 z-50 bg-white/70 backdrop-blur-md border border-blue-200 shadow-lg rounded-full p-3 hover:bg-blue-600 hover:text-white transition-colors animate-fade-in-up"
+					onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+					aria-label="Scroll to top"
+				>
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+						<path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+					</svg>
+				</button>
+			)}
 		</div>
 	);
 }
