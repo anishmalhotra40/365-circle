@@ -12,7 +12,7 @@ export default function Footer() {
 				{/* Logo and Branding */}
 				<div className="flex items-center gap-3">
 					<Image src="/logo.png" alt="365 Circle Logo" width={42} height={42} className="rounded-lg" />
-					<span className="text-blue-900 dark:text-blue-100 font-bold text-xl">365 Circle</span>
+					<span className="text-blue-900 dark:text-blue-100 font-bold text-xl">The 365 Circle</span>
 				</div>
 
 				{/* Navigation / Links */}
@@ -29,9 +29,10 @@ export default function Footer() {
 				</div>
 
 				{/* Copyright */}
-				<p className="text-blue-800/70 dark:text-blue-400 text-sm text-center md:text-right">
-					© {new Date().getFullYear()} 365 Circle. All rights reserved.
-				</p>
+				<div className="text-blue-800/70 dark:text-blue-400 text-sm text-center md:text-right">
+					<p>© {new Date().getFullYear()} The 365 Circle. All rights reserved.</p>
+					<p className="text-xs mt-1">Powered by TransCurators</p>
+				</div>
 			</div>
 		</footer>
 	)
