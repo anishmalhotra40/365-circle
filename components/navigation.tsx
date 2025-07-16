@@ -82,7 +82,7 @@ export default function Navigation() {
 				}`}
 			>
 				<div className="flex justify-between items-center">
-					<Image src="/logo.png" alt="The 365 Circle Logo" width={500} height={400} className="h-10 w-auto" />
+					<Image src="/logo.png" alt="The 365 Circle Logo" width={500} height={400} className="h-10 w-auto drop-shadow-lg" />
 
 					<DesktopNav activeSection={activeSection} isInHero={isInHero} handleNavigation={handleNavigation} />
 

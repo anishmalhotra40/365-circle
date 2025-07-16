@@ -120,3 +120,50 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Blinking animation for TransCurators capsule */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.animate-blink {
+  animation: blink 1.2s infinite;
+}
+
+/* Subtle blink for the star */
+@keyframes blink-star {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.animate-blink-star {
+  animation: blink-star 1.2s infinite;
+}
+
+/* Fade-in for scroll-to-top button */
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes pulse-blue {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+  }
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.2);
+  }
+}
+.animate-pulse-blue {
+  animation: pulse-blue 1.2s infinite;
+}
