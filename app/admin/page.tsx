@@ -10,11 +10,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { MoreHorizontal, PlusCircle, Edit, Trash2, Upload, Download } from "lucide-react"
 import Image from "next/image"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 
 const dummyEvents = [
   { id: 1, name: "Virtual Networking Meetup", date: "2023-11-15", location: "Online", status: "Upcoming" },
@@ -68,11 +67,7 @@ export default function AdminPage() {
   const [error, setError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    fetchConnections()
-  }, [])
-
-  const fetchConnections = async () => {
+  const fetchConnections = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -100,7 +95,11 @@ export default function AdminPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [supabase])
+
+  useEffect(() => {
+    fetchConnections()
+  }, [fetchConnections])
 
   const handleAddConnection = async () => {
     try {
@@ -678,3 +677,4 @@ export default function AdminPage() {
     </div>
   )
 }
+
