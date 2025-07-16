@@ -645,7 +645,7 @@ export default function AdminPage() {
         console.log('Existing records count:', existingRecords?.length || 0)
 
         let successCount = 0
-        let updateCount = 0
+        const updateCount = 0
         let insertCount = 0
         let skipCount = 0
         let errorCount = 0
@@ -1170,6 +1170,35 @@ export default function AdminPage() {
                 <CardDescription className="text-blue-800/80">View and manage membership applications.</CardDescription>
               </div>
               <div className="flex gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="gap-1 border-blue-200 text-blue-600 hover:bg-blue-50"
+                    >
+                      Sort by {membersSortBy === 'id' ? 'ID' : membersSortBy === 'created_at' ? 'Date' : membersSortBy === 'name' ? 'Name' : membersSortBy === 'email' ? 'Email' : 'Company'} {membersSortOrder === 'asc' ? '↑' : '↓'}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuLabel>Sort Options</DropdownMenuLabel>
+                    <DropdownMenuItem onClick={() => handleMembersSortChange('id')}>
+                      ID {membersSortBy === 'id' && (membersSortOrder === 'asc' ? '↑' : '↓')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleMembersSortChange('created_at')}>
+                      Date Added {membersSortBy === 'created_at' && (membersSortOrder === 'asc' ? '↑' : '↓')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleMembersSortChange('name')}>
+                      Name {membersSortBy === 'name' && (membersSortOrder === 'asc' ? '↑' : '↓')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleMembersSortChange('email')}>
+                      Email {membersSortBy === 'email' && (membersSortOrder === 'asc' ? '↑' : '↓')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleMembersSortChange('company')}>
+                      Company {membersSortBy === 'company' && (membersSortOrder === 'asc' ? '↑' : '↓')}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <Button 
                   size="sm" 
                   variant="outline" 
@@ -1273,6 +1302,35 @@ export default function AdminPage() {
                 <CardDescription className="text-blue-800/80">View and manage featured application submissions.</CardDescription>
               </div>
               <div className="flex gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="gap-1 border-blue-200 text-blue-600 hover:bg-blue-50"
+                    >
+                      Sort by {featuredSortBy === 'id' ? 'ID' : featuredSortBy === 'created_at' ? 'Date' : featuredSortBy === 'name' ? 'Name' : featuredSortBy === 'email' ? 'Email' : 'Company'} {featuredSortOrder === 'asc' ? '↑' : '↓'}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuLabel>Sort Options</DropdownMenuLabel>
+                    <DropdownMenuItem onClick={() => handleFeaturedSortChange('id')}>
+                      ID {featuredSortBy === 'id' && (featuredSortOrder === 'asc' ? '↑' : '↓')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleFeaturedSortChange('created_at')}>
+                      Date Added {featuredSortBy === 'created_at' && (featuredSortOrder === 'asc' ? '↑' : '↓')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleFeaturedSortChange('name')}>
+                      Name {featuredSortBy === 'name' && (featuredSortOrder === 'asc' ? '↑' : '↓')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleFeaturedSortChange('email')}>
+                      Email {featuredSortBy === 'email' && (featuredSortOrder === 'asc' ? '↑' : '↓')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleFeaturedSortChange('company')}>
+                      Company {featuredSortBy === 'company' && (featuredSortOrder === 'asc' ? '↑' : '↓')}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <Button 
                   size="sm" 
                   variant="outline" 
@@ -1603,3 +1661,5 @@ export default function AdminPage() {
     </div>
   )
 }
+
+
