@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "365 Circle",
+  title: "The 365 Circle",
   description: "Connect, collaborate, and grow with 365 Circle",
 };
 

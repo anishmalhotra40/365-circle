@@ -43,10 +43,10 @@ const BrandCarousel: React.FC = () => {
             Our <span className="text-blue-500">Trusted Network</span>
           </span>
         </div>
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#0B0B0B] leading-tight">
-          Working With Students & Corporates <br /> From Leading Organizations & Institutions
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-900 leading-tight">
+          Working With Founders & Corporates <br /> From Leading Organizations & Institutions
         </h2>
-        <p className="mt-4 text-sm md:text-base text-[#2C3E50] max-w-xl mx-auto">
+        <p className="mt-4 text-sm md:text-base text-blue-500 max-w-xl mx-auto">
           Gain insights, mentorship, and career opportunities from professionals at top companies worldwide.
         </p>
       </motion.div>

@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   images: {
     domains: [
       "res.cloudinary.com", 
+      "media.licdn.com", // Allow LinkedIn profile images
     ],
   },
 };

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
@@ -8,11 +8,12 @@ import { ArrowRight, ChevronDown, Award, Users, Calendar } from "lucide-react"
 import Navigation from "@/components/navigation"
 import ContactModal from "@/components/contact-modal"
 import ContactForm from "@/components/contact-form"
-import { TextHoverEffect } from "@/components/text-hover"
 import FaqSection from "@/components/FAQ"
 import Footer from "@/components/Footer"
 import AboutUsSection from "@/components/about"
 import BrandCarousel from "@/components/brand-carousel"
+import Connections from "@/components/connections"
+import Metrics from "@/components/metrics"
 
 
 
@@ -76,11 +77,15 @@ export default function HomePage() {
 						<h1 className="text-5xl md:text-7xl font-extrabold text-white tracking-tighter mb-4">
 							Capturing Stories, Creating Connections.
 						</h1>
-						<p className="text-lg md:text-xl text-white max-w-2xl mx-auto mb-8">
-							A community-driven initiative dedicated to bringing together individuals from diverse walks of life to share their unique stories and build meaningful networks.
-						</p>
+						<div className="flex justify-center">
+							<div className="backdrop-blur-md bg-white/5 rounded-2xl shadow-lg px-6 py-4 max-w-2xl mx-auto mb-8">
+								<p className="text-lg md:text-xl text-white">
+									A community-driven initiative dedicated to bringing together individuals from diverse walks of life to share their unique stories and build meaningful networks.
+								</p>
+							</div>
+						</div>
 						<Button size="lg" className="bg-blue-600 text-white hover:bg-blue-700 rounded-full group" onClick={() => openModal('member')}>
-							Become a Member <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
+							Join the Waitllist <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
 						</Button>
 					</div>
 				</div>
@@ -90,10 +95,12 @@ export default function HomePage() {
 				</a>
 			</section>
 
-			{/* Marquee Banner */}
+			<Metrics />
+
+			{/* Marquee Banner
 			<div className="w-full">
 				<TextHoverEffect />
-			</div>
+			</div> */}
 
 			{/* About Us Section */}
 			<div><AboutUsSection /></div>
@@ -135,6 +142,8 @@ export default function HomePage() {
 					</div>
 				</div>
 			</section>
+
+			<Connections />
 
 			{/* Newsletter Section */}
 			<section id="newsletter" className="py-20 md:py-32 bg-blue-50/50">

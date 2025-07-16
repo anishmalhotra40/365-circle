@@ -1,15 +1,12 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
-import { ChevronDown, ChevronLeft, ChevronRight, Mail, Star, Linkedin} from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Mail, Star, Linkedin } from "lucide-react";
 import cn from "classnames";
-import Footer from "@/components/Footer";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
 
 const supabase = createClient();
 
-// Updated type to match new schema (case-sensitive, spaces, etc.)
 type Connection = {
   id: number;
   Name?: string;
@@ -40,20 +37,21 @@ type ProfileCardProps = {
 
 function ProfileCard({ name, designation, organization_name, industry, email, linkedin_url, featured, post_url }: ProfileCardProps) {
   return (
-    <div className="group relative overflow-hidden rounded-3xl bg-white p-6 shadow-lg transition-all duration-300 hover:shadow-xl">
+    <div className="group relative overflow-hidden rounded-3xl bg-white p-6 shadow-md transition-all duration-150 border border-blue-100/30 cursor-pointer
+      hover:shadow-lg hover:-translate-y-1 hover:scale-[1.025]">
       {/* Featured Tag */}
       {featured && (
         <span className="absolute top-4 left-4 z-10 rounded-full bg-yellow-400/90 px-3 py-1 text-xs font-bold text-white shadow">Featured</span>
       )}
       {/* Profile Photo */}
       <div className="mb-4 flex justify-center">
-        <div className="h-20 w-20 overflow-hidden rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center">
+        <div className="h-20 w-20 overflow-hidden rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center group-hover:scale-105 transition-transform duration-150">
           <Image src="/placeholder.svg" alt={name} width={80} height={80} className="h-full w-full rounded-full object-contain" />
         </div>
       </div>
       {/* Profile Info */}
       <div className="text-center">
-        <h3 className="text-lg font-semibold text-gray-900 truncate" title={name}>{name}</h3>
+        <h3 className="text-lg font-semibold text-gray-900 truncate group-hover:text-blue-700 transition-colors duration-150" title={name}>{name}</h3>
         <p className="mt-1 text-sm text-blue-700 font-medium truncate" title={designation}>{designation}</p>
         <p className="mt-1 text-xs text-gray-500 truncate" title={organization_name}>{organization_name}</p>
         <p className="mt-1 text-xs text-blue-500 font-semibold truncate" title={industry}>{industry}</p>
@@ -154,22 +152,22 @@ const Connections = () => {
 
   return (
     <>
-      <section id="connections" className="py-20 md:py-32 bg-white dark:bg-black">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-[#22306e]">
+      <section id="connections" className="pb-10 md:pb-16 bg-transparent">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-8 md:mb-10">
+            <h2 className="inline-block text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-blue-900 dark:text-blue-200 drop-shadow-lg px-2 py-1 rounded-md">
               Connections Across Industry
             </h2>
-            <p className="text-lg text-[#22306e] mt-4 max-w-xl mx-auto font-medium">
+            <p className="text-base md:text-lg text-blue-900 dark:text-blue-200 mt-2 max-w-xl mx-auto font-medium opacity-80">
               Discover professionals from various fields.
             </p>
           </div>
-          <div className="flex justify-end mb-12 relative">
+          <div className="flex justify-end mb-6 md:mb-8 relative">
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className={cn(
-                  "flex items-center gap-2 px-6 py-3 text-base font-semibold rounded-xl border border-[#405ff4] bg-white text-[#405ff4] hover:bg-blue-50 shadow transition-all min-w-[200px] justify-between focus:outline-none focus:ring-2 focus:ring-[#405ff4]",
+                  "flex items-center gap-2 px-5 py-2 text-base font-semibold rounded-xl border border-[#405ff4] bg-white text-[#405ff4] hover:bg-blue-50 shadow transition-all min-w-[180px] justify-between focus:outline-none focus:ring-2 focus:ring-[#405ff4]",
                   dropdownOpen && "ring-2 ring-[#405ff4]"
                 )}
               >
@@ -177,7 +175,7 @@ const Connections = () => {
                 <ChevronDown className={`w-5 h-5 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
               </button>
               {dropdownOpen && (
-                <div className="absolute top-14 right-0 w-56 bg-white rounded-xl shadow-lg z-50 overflow-hidden border border-[#405ff4] animate-fade-in">
+                <div className="absolute top-12 right-0 w-52 bg-white rounded-xl shadow-lg z-50 overflow-hidden border border-[#405ff4] animate-fade-in">
                   {filterOptions.map((type) => (
                     <button
                       key={type}
@@ -199,7 +197,7 @@ const Connections = () => {
               )}
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {paginatedConnections.map((prof) => (
               <ProfileCard
                 key={prof.id}
@@ -216,11 +214,11 @@ const Connections = () => {
           </div>
           {/* Pagination controls if needed */}
           {totalPages > 1 && (
-            <div className="flex justify-center mt-12 gap-4">
+            <div className="flex justify-center mt-10 gap-4">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="px-4 py-2 rounded-lg border bg-white text-[#405ff4] font-semibold disabled:opacity-50 flex items-center gap-2"
+                className="px-4 py-2 rounded-lg border bg-white text-[#405ff4] font-semibold disabled:opacity-50 flex items-center gap-2 shadow-sm hover:bg-blue-50 transition"
               >
                 <ChevronLeft className="w-4 h-4" /> Prev
               </button>
@@ -228,7 +226,7 @@ const Connections = () => {
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="px-4 py-2 rounded-lg border bg-white text-[#405ff4] font-semibold disabled:opacity-50 flex items-center gap-2"
+                className="px-4 py-2 rounded-lg border bg-white text-[#405ff4] font-semibold disabled:opacity-50 flex items-center gap-2 shadow-sm hover:bg-blue-50 transition"
               >
                 Next <ChevronRight className="w-4 h-4" />
               </button>
@@ -236,7 +234,6 @@ const Connections = () => {
           )}
         </div>
       </section>
-      <Footer />
     </>
   );
 };
