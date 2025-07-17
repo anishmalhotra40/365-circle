@@ -60,7 +60,7 @@ function ContactFormInner() {
         )}
 
         <form 
-          action="https://formsubmit.co/anish.malhotra@the365circle.in" 
+          action="https://formsubmit.co/anasnasim1@gmail.com" 
           method="POST"
           className="max-w-2xl mx-auto bg-blue-50 dark:bg-blue-900/50 p-8 md:p-10 rounded-xl shadow-md dark:shadow-blue-900/30 space-y-8 transition-all"
         >
