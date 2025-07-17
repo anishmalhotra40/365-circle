@@ -16,7 +16,7 @@ const navItems = [
 		dropdown: [
 			{ name: "365 Connections", href: "/365-connections", icon: Users },
 			{ name: "Get Featured", href: "#get-involved", icon: Star },
-			{ name: "Become a Member", href: "#get-involved", icon: UserPlus },
+			{ name: "Join the Waitlist", href: "#get-involved", icon: UserPlus },
 			{ name: "Exclusive Events", href: "#get-involved", icon: CalendarDays },
 		],
 	},

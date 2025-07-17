@@ -27,7 +27,29 @@ const BrandCarousel: React.FC = () => {
   const doubledBrands = [...brands, ...brands];
 
   return (
-    <div className="w-full bg-transparent py-4 md:py-8 mb-8 md:mb-16 flex flex-col items-center justify-center">
+    <div className="w-full relative py-4 md:py-8 mb-8 md:mb-16 flex flex-col items-center justify-center overflow-hidden">
+      {/* Watermark Logo */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none select-none absolute inset-0 flex items-center justify-center z-0"
+        style={{
+          opacity: 0.07,
+          background: 'none',
+          top: '0',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          position: 'absolute',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+        }}
+      >
+        <img
+          src="/logo.png"
+          alt="365 Circle Logo Watermark"
+          className="w-[200px] h-[200px] md:w-[200px] md:h-[200px] object-contain mt-[-4px] md:mt-[-4px]"
+        />
+      </div>
 
       {/* Heading Section */}
       <motion.div
@@ -35,7 +57,7 @@ const BrandCarousel: React.FC = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8 }}
-        className="text-center mb-10"
+        className="text-center mb-10 relative z-10"
       >
         <div className="flex items-center justify-center gap-2 mb-4">
           <Users className="w-5 h-5 text-[#2C3E50]" />
@@ -51,32 +73,34 @@ const BrandCarousel: React.FC = () => {
         </p>
       </motion.div>
 
-      {/* Carousel */}
+      {/* Carousel with blue background */}
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8 }}
-        className="w-full max-w-[1800px] overflow-hidden"
+        className="w-full max-w-[1800px] overflow-hidden relative z-10"
       >
-        <div className="flex items-center min-w-max animate-marquee whitespace-nowrap">
-          {doubledBrands.map((brand, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-center px-1 md:px-2 min-w-[100px] sm:min-w-[140px] md:min-w-[180px] lg:min-w-[180px] h-[60px] sm:h-[80px] md:h-[100px] lg:h-[100px]"
-            >
-               <div className="flex items-center justify-center w-[100px] h-[60px] sm:w-[140px] sm:h-[80px] md:w-[180px] md:h-[100px] lg:w-[180px] lg:h-[100px] bg-white rounded-lg shadow-none">
-                 <Image
-                   src={brand.src}
-                   alt={brand.alt}
-                   width={180}
-                   height={100}
-                   className="object-contain w-full h-full"
-                   priority
-                 />
-               </div>
-            </div>
-          ))}
+        <div className="bg-blue-50 py-2 md:py-4 rounded-xl">
+          <div className="flex items-center min-w-max animate-marquee whitespace-nowrap">
+            {doubledBrands.map((brand, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-center px-1 md:px-2 min-w-[100px] sm:min-w-[140px] md:min-w-[180px] lg:min-w-[180px] h-[60px] sm:h-[80px] md:h-[100px] lg:h-[100px]"
+              >
+                <div className="flex items-center justify-center w-[100px] h-[60px] sm:w-[140px] sm:h-[80px] md:w-[180px] md:h-[100px] lg:w-[180px] lg:h-[100px]">
+                  <Image
+                    src={brand.src}
+                    alt={brand.alt}
+                    width={180}
+                    height={100}
+                    className="object-contain w-full h-full"
+                    priority
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </motion.div>
 

@@ -167,11 +167,12 @@ const Connections = () => {
     <>
       <section id="connections" className="pb-10 md:pb-16 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-8 md:mb-10">
-            <h2 className="inline-block text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-blue-900 dark:text-blue-200 drop-shadow-lg px-2 py-1 rounded-md">
+          <div className="text-center mb-8 md:mb-12">
+            <h2 className="inline-block text-4xl md:text-5xl font-bold tracking-tight text-blue-900 dark:text-blue-200 px-2 py-1">
               Connections Across Industry
             </h2>
-            <p className="text-base md:text-lg text-blue-900 dark:text-blue-200 mt-2 max-w-xl mx-auto font-medium opacity-80">
+            <div className="mx-auto w-16 h-1 bg-blue-200 dark:bg-blue-700 rounded-full my-4" />
+            <p className="text-base md:text-lg text-blue-900 dark:text-blue-200 mt-2 max-w-xl mx-auto font-normal opacity-80">
               Discover professionals from various fields.
             </p>
           </div>
