@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ChevronDown, ChevronLeft, ChevronRight, Mail, Star, Linkedin } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Star, Linkedin } from "lucide-react";
 import cn from "classnames";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
@@ -10,18 +10,19 @@ const supabase = createClient();
 type Connection = {
   id: number;
   Name?: string;
-  Designation?: string;
+  "Designation "?: string;
   "Organization Name"?: string;
-  "Organization Type"?: string;
-  Industry?: string;
+  "Organization Type (Small/ Medium/ Large)"?: string;
+  "Industry "?: string;
   "Sub Sector"?: string;
-  "Connect Type"?: string;
-  "Designation Level"?: string;
+  "Type of connect (Founder/ Employee/ Freelancer)"?: string;
+  "Designation Type (Senior/ Mid/ Entry Level)"?: string;
   "Phone Number"?: string;
-  Email?: string;
-  "LinkedIn URL"?: string;
-  Featured?: string; // text, "true" or null/empty
-  "Post URL"?: string;
+  "Email ID"?: string;
+  "Linkedin "?: string;
+  "Featured "?: string;
+  "Featured post URL "?: string;
+  "Photo URL"?: string;
 };
 
 type ProfileCardProps = {
@@ -29,13 +30,15 @@ type ProfileCardProps = {
   designation: string;
   organization_name: string;
   industry: string;
-  email?: string;
   linkedin_url?: string;
   featured: boolean;
   post_url?: string;
+  photo_url?: string;
 };
 
-function ProfileCard({ name, designation, organization_name, industry, email, linkedin_url, featured, post_url }: ProfileCardProps) {
+function ProfileCard({ name, designation, organization_name, industry, linkedin_url, featured, post_url, photo_url }: ProfileCardProps) {
+  const [imageError, setImageError] = useState(false);
+  
   return (
     <div className="group relative overflow-hidden rounded-3xl bg-white p-6 shadow-md transition-all duration-150 border border-blue-100/30 cursor-pointer
       hover:shadow-lg hover:-translate-y-1 hover:scale-[1.025]">
@@ -46,7 +49,22 @@ function ProfileCard({ name, designation, organization_name, industry, email, li
       {/* Profile Photo */}
       <div className="mb-4 flex justify-center">
         <div className="h-20 w-20 overflow-hidden rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center group-hover:scale-105 transition-transform duration-150">
-          <Image src="/placeholder.svg" alt={name} width={80} height={80} className="h-full w-full rounded-full object-contain" />
+          {photo_url && !imageError ? (
+            <Image 
+              src={photo_url} 
+              alt={name} 
+              width={80} 
+              height={80} 
+              className="h-full w-full rounded-full object-cover" 
+              onError={() => setImageError(true)}
+            />
+          ) : (
+            <div className="h-full w-full rounded-full bg-blue-100 flex items-center justify-center">
+              <span className="text-blue-600 font-semibold text-lg">
+                {name.charAt(0).toUpperCase()}
+              </span>
+            </div>
+          )}
         </div>
       </div>
       {/* Profile Info */}
@@ -58,19 +76,14 @@ function ProfileCard({ name, designation, organization_name, industry, email, li
       </div>
       {/* Contact & Featured Post Icons */}
       <div className="mt-5 flex justify-center gap-3">
-        {email && (
-          <a href={`mailto:${email}`} className="rounded-full p-2 bg-blue-50 hover:bg-blue-100 text-blue-600 transition" title="Email">
-            <Mail className="w-5 h-5" />
+        {post_url && (
+          <a href={post_url.startsWith('http') ? post_url : `https://${post_url}`} target="_blank" rel="noopener noreferrer" className="rounded-full p-2 bg-yellow-50 hover:bg-yellow-100 text-yellow-600 transition" title="Featured Post">
+            <Star className="w-5 h-5" />
           </a>
         )}
         {linkedin_url && (
           <a href={linkedin_url.startsWith('http') ? linkedin_url : `https://${linkedin_url}`} target="_blank" rel="noopener noreferrer" className="rounded-full p-2 bg-blue-50 hover:bg-blue-100 text-blue-600 transition" title="LinkedIn">
             <Linkedin className="w-5 h-5" />
-          </a>
-        )}
-        {featured && post_url && (
-          <a href={post_url} target="_blank" rel="noopener noreferrer" className="rounded-full p-2 bg-yellow-50 hover:bg-yellow-100 text-yellow-600 transition" title="Featured Post">
-            <Star className="w-5 h-5" />
           </a>
         )}
       </div>
@@ -107,7 +120,7 @@ const Connections = () => {
 
   // Industry filter logic (case-sensitive, fallback to "Others")
   const industryCounts = connections.reduce((acc: Record<string, number>, curr) => {
-    const ind = curr.Industry && curr.Industry !== "-" && curr.Industry !== "Other" ? curr.Industry : "Others";
+    const ind = curr["Industry "] && curr["Industry "] !== "-" && curr["Industry "] !== "Other" ? curr["Industry "] : "Others";
     acc[ind] = (acc[ind] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
@@ -119,8 +132,8 @@ const Connections = () => {
     selectedIndustry === "All"
       ? connections
       : selectedIndustry === "Others"
-      ? connections.filter((p) => !p.Industry || p.Industry === "-" || p.Industry === "Other")
-      : connections.filter((p) => p.Industry === selectedIndustry);
+      ? connections.filter((p) => !p["Industry "] || p["Industry "] === "-" || p["Industry "] === "Other")
+      : connections.filter((p) => p["Industry "] === selectedIndustry);
 
   // 2 rows x 3 columns = 6 cards per page
   const CARDS_PER_PAGE = 6;
@@ -202,13 +215,13 @@ const Connections = () => {
               <ProfileCard
                 key={prof.id}
                 name={prof.Name || ""}
-                designation={prof.Designation || ""}
+                designation={prof["Designation "] || ""}
                 organization_name={prof["Organization Name"] || ""}
-                industry={prof.Industry || ""}
-                email={prof.Email || undefined}
-                linkedin_url={prof["LinkedIn URL"] || undefined}
-                featured={!!prof.Featured && prof.Featured.toLowerCase() === "true"}
-                post_url={prof["Post URL"] || undefined}
+                industry={prof["Industry "] || ""}
+                linkedin_url={prof["Linkedin "] || undefined}
+                featured={!!prof["Featured "] && (prof["Featured "].toLowerCase() === "yes" || prof["Featured "].toLowerCase() === "true")}
+                post_url={prof["Featured post URL "] || undefined}
+                photo_url={prof["Photo URL"] || undefined}
               />
             ))}
           </div>

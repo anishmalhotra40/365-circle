@@ -18,18 +18,19 @@ import { useState, useEffect, useRef, useCallback } from "react"
 interface Connection {
   id: number;
   "Name": string;
-  "Designation": string;
+  "Designation ": string;
   "Organization Name"?: string;
-  "Organization Type"?: string;
-  "Industry"?: string;
+  "Organization Type (Small/ Medium/ Large)"?: string;
+  "Industry "?: string;
   "Sub Sector"?: string;
-  "Connect Type"?: string;
-  "Designation Level"?: string;
+  "Type of connect (Founder/ Employee/ Freelancer)"?: string;
+  "Designation Type (Senior/ Mid/ Entry Level)"?: string;
   "Phone Number"?: string;
-  "Email"?: string;
-  "LinkedIn URL"?: string;
-  "Featured": string;
-  "Post URL"?: string;
+  "Email ID"?: string;
+  "Linkedin "?: string;
+  "Featured "?: string;
+  "Featured post URL "?: string;
+  "Photo URL"?: string;
   created_at?: string;
 }
 
@@ -91,20 +92,21 @@ interface EventRegistration {
   };
 }
 
-const initialConnectionData: Omit<Connection, 'id'> = {
+const initialConnectionData: Omit<Connection, 'id' | 'created_at'> = {
   "Name": '',
-  "Designation": '',
+  "Designation ": '',
   "Organization Name": '',
-  "Organization Type": '',
-  "Industry": '',
+  "Organization Type (Small/ Medium/ Large)": '',
+  "Industry ": '',
   "Sub Sector": '',
-  "Connect Type": '',
-  "Designation Level": '',
+  "Type of connect (Founder/ Employee/ Freelancer)": '',
+  "Designation Type (Senior/ Mid/ Entry Level)": '',
   "Phone Number": '',
-  "Email": '',
-  "LinkedIn URL": '',
-  "Featured": 'No',
-  "Post URL": ''
+  "Email ID": '',
+  "Linkedin ": '',
+  "Featured ": 'No',
+  "Featured post URL ": '',
+  "Photo URL": ''
 };
 
 const initialEventData: Omit<Event, 'id' | 'created_at' | 'updated_at'> = {
@@ -148,7 +150,7 @@ export default function AdminPage() {
   const [featuredError, setFeaturedError] = useState<string | null>(null)
   const [eventsError, setEventsError] = useState<string | null>(null)
   const [registrationsError, setRegistrationsError] = useState<string | null>(null)
-  const [sortBy, setSortBy] = useState<'created_at' | 'Name' | 'Designation' | 'Organization Name'>('created_at')
+  const [sortBy, setSortBy] = useState<'created_at' | 'Name' | 'Designation ' | 'Organization Name'>('created_at')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
   const [membersSortBy, setMembersSortBy] = useState<'id' | 'created_at' | 'name' | 'email' | 'company'>('id')
   const [membersSortOrder, setMembersSortOrder] = useState<'asc' | 'desc'>('asc')
@@ -217,9 +219,9 @@ export default function AdminPage() {
               aValue = a["Name"] || ''
               bValue = b["Name"] || ''
               break
-            case 'Designation':
-              aValue = a["Designation"] || ''
-              bValue = b["Designation"] || ''
+            case 'Designation ':
+              aValue = a["Designation "] || ''
+              bValue = b["Designation "] || ''
               break
             case 'Organization Name':
               aValue = a["Organization Name"] || ''
@@ -872,18 +874,19 @@ export default function AdminPage() {
     setEditingConnection(connection)
     setConnectionForm({
       "Name": connection["Name"],
-      "Designation": connection["Designation"],
+      "Designation ": connection["Designation "],
       "Organization Name": connection["Organization Name"] || '',
-      "Organization Type": connection["Organization Type"] || '',
-      "Industry": connection["Industry"] || '',
+      "Organization Type (Small/ Medium/ Large)": connection["Organization Type (Small/ Medium/ Large)"] || '',
+      "Industry ": connection["Industry "] || '',
       "Sub Sector": connection["Sub Sector"] || '',
-      "Connect Type": connection["Connect Type"] || '',
-      "Designation Level": connection["Designation Level"] || '',
+      "Type of connect (Founder/ Employee/ Freelancer)": connection["Type of connect (Founder/ Employee/ Freelancer)"] || '',
+      "Designation Type (Senior/ Mid/ Entry Level)": connection["Designation Type (Senior/ Mid/ Entry Level)"] || '',
       "Phone Number": connection["Phone Number"] || '',
-      "Email": connection["Email"] || '',
-      "LinkedIn URL": connection["LinkedIn URL"] || '',
-      "Featured": connection["Featured"] || 'No',
-      "Post URL": connection["Post URL"] || ''
+      "Email ID": connection["Email ID"] || '',
+      "Linkedin ": connection["Linkedin "] || '',
+      "Featured ": connection["Featured "] || 'No',
+      "Featured post URL ": connection["Featured post URL "] || '',
+      "Photo URL": connection["Photo URL"] || ''
     })
     setIsConnectionDialogOpen(true)
   }
@@ -929,25 +932,26 @@ export default function AdminPage() {
     const headers = [
       'Name', 'Designation', 'Organization Name', 'Organization Type',
       'Industry', 'Sub Sector', 'Connect Type', 'Designation Level',
-      'Phone Number', 'Email', 'LinkedIn URL', 'Featured', 'Post URL'
+      'Phone Number', 'Email', 'LinkedIn URL', 'Featured', 'Post URL', 'Photo URL'
     ]
 
     const csvContent = [
       headers.join(','),
       ...connections.map(conn => [
         `"${conn["Name"] || ''}"`,
-        `"${conn["Designation"] || ''}"`,
+        `"${conn["Designation "] || ''}"`,
         `"${conn["Organization Name"] || ''}"`,
-        `"${conn["Organization Type"] || ''}"`,
-        `"${conn["Industry"] || ''}"`,
+        `"${conn["Organization Type (Small/ Medium/ Large)"] || ''}"`,
+        `"${conn["Industry "] || ''}"`,
         `"${conn["Sub Sector"] || ''}"`,
-        `"${conn["Connect Type"] || ''}"`,
-        `"${conn["Designation Level"] || ''}"`,
+        `"${conn["Type of connect (Founder/ Employee/ Freelancer)"] || ''}"`,
+        `"${conn["Designation Type (Senior/ Mid/ Entry Level)"] || ''}"`,
         `"${conn["Phone Number"] || ''}"`,
-        `"${conn["Email"] || ''}"`,
-        `"${conn["LinkedIn URL"] || ''}"`,
-        conn["Featured"] === 'Yes' ? 'Yes' : 'No',
-        `"${conn["Post URL"] || ''}"`
+        `"${conn["Email ID"] || ''}"`,
+        `"${conn["Linkedin "] || ''}"`,
+        conn["Featured "] === 'Yes' ? 'Yes' : 'No',
+        `"${conn["Featured post URL "] || ''}"`,
+        `"${conn["Photo URL"] || ''}"`
       ].join(','))
     ].join('\n')
 
@@ -1125,18 +1129,19 @@ export default function AdminPage() {
 
         const importData = dataRows.map(row => ({
           "Name": row[0] || '',
-          "Designation": row[1] || '',
+          "Designation ": row[1] || '',
           "Organization Name": row[2] || '',
-          "Organization Type": row[3] || '',
-          "Industry": row[4] || '',
+          "Organization Type (Small/ Medium/ Large)": row[3] || '',
+          "Industry ": row[4] || '',
           "Sub Sector": row[5] || '',
-          "Connect Type": row[6] || '',
-          "Designation Level": row[7] || '',
+          "Type of connect (Founder/ Employee/ Freelancer)": row[6] || '',
+          "Designation Type (Senior/ Mid/ Entry Level)": row[7] || '',
           "Phone Number": row[8] || '',
-          "Email": row[9] || '',
-          "LinkedIn URL": row[10] || '',
-          "Featured": row[11]?.toLowerCase() === 'yes' || row[11]?.toLowerCase() === 'true' ? 'Yes' : 'No',
-          "Post URL": row[12] || ''
+          "Email ID": row[9] || '',
+          "Linkedin ": row[10] || '',
+          "Featured ": row[11]?.toLowerCase() === 'yes' || row[11]?.toLowerCase() === 'true' ? 'Yes' : 'No',
+          "Featured post URL ": row[12] || '',
+          "Photo URL": row[13] || ''
         }))
 
         console.log('Importing data:', importData)
@@ -1144,7 +1149,7 @@ export default function AdminPage() {
         // First, fetch all existing records to check for duplicates
         const { data: existingRecords, error: fetchError } = await supabase
           .from('365circle')
-          .select('Name, Email, "Phone Number"')
+          .select('Name, "Email ID", "Phone Number"')
 
         if (fetchError) {
           alert(`Error fetching existing records: ${fetchError.message}`)
@@ -1164,7 +1169,7 @@ export default function AdminPage() {
         // Process each record individually
         for (const record of importData) {
           try {
-            if (!record["Name"] || !record["Designation"]) {
+            if (!record["Name"] || !record["Designation "]) {
               errors.push(`Skipping record: Name and Designation are required`)
               errorCount++
               continue
@@ -1176,8 +1181,8 @@ export default function AdminPage() {
               const nameMatch = existing.Name?.toLowerCase().trim() === record["Name"].toLowerCase().trim()
               
               // If email exists, also check email match
-              const emailMatch = record["Email"] && existing.Email 
-                ? existing.Email.toLowerCase().trim() === record["Email"].toLowerCase().trim()
+              const emailMatch = record["Email ID"] && existing["Email ID"] 
+                ? existing["Email ID"].toLowerCase().trim() === record["Email ID"].toLowerCase().trim()
                 : false
               
               // If phone exists, also check phone match
@@ -1418,7 +1423,7 @@ export default function AdminPage() {
                       variant="outline" 
                       className="gap-1 border-blue-200 text-blue-600 hover:bg-blue-50"
                     >
-                      Sort by {sortBy === 'created_at' ? 'Date' : sortBy === 'Name' ? 'Name' : sortBy === 'Designation' ? 'Designation' : 'Organization'} {sortOrder === 'asc' ? '↑' : '↓'}
+                      Sort by {sortBy === 'created_at' ? 'Date' : sortBy === 'Name' ? 'Name' : sortBy === 'Designation ' ? 'Designation' : 'Organization'} {sortOrder === 'asc' ? '↑' : '↓'}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
@@ -1429,8 +1434,8 @@ export default function AdminPage() {
                     <DropdownMenuItem onClick={() => handleSortChange('Name')}>
                       Name {sortBy === 'Name' && (sortOrder === 'asc' ? '↑' : '↓')}
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleSortChange('Designation')}>
-                      Designation {sortBy === 'Designation' && (sortOrder === 'asc' ? '↑' : '↓')}
+                    <DropdownMenuItem onClick={() => handleSortChange('Designation ')}>
+                      Designation {sortBy === 'Designation ' && (sortOrder === 'asc' ? '↑' : '↓')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => handleSortChange('Organization Name')}>
                       Organization {sortBy === 'Organization Name' && (sortOrder === 'asc' ? '↑' : '↓')}
@@ -1487,8 +1492,8 @@ export default function AdminPage() {
                           <Label htmlFor="designation">Designation *</Label>
                           <Input
                             id="designation"
-                            value={connectionForm["Designation"]}
-                            onChange={(e) => setConnectionForm({...connectionForm, "Designation": e.target.value})}
+                            value={connectionForm["Designation "]}
+                            onChange={(e) => setConnectionForm({...connectionForm, "Designation ": e.target.value})}
                             required
                           />
                         </div>
@@ -1503,11 +1508,11 @@ export default function AdminPage() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="organization_type">Organization Type</Label>
+                          <Label htmlFor="organization_type">Organization Type (Small/ Medium/ Large)</Label>
                           <Input
                             id="organization_type"
-                            value={connectionForm["Organization Type"]}
-                            onChange={(e) => setConnectionForm({...connectionForm, "Organization Type": e.target.value})}
+                            value={connectionForm["Organization Type (Small/ Medium/ Large)"]}
+                            onChange={(e) => setConnectionForm({...connectionForm, "Organization Type (Small/ Medium/ Large)": e.target.value})}
                           />
                         </div>
                       </div>
@@ -1516,8 +1521,8 @@ export default function AdminPage() {
                           <Label htmlFor="industry">Industry</Label>
                           <Input
                             id="industry"
-                            value={connectionForm["Industry"]}
-                            onChange={(e) => setConnectionForm({...connectionForm, "Industry": e.target.value})}
+                            value={connectionForm["Industry "]}
+                            onChange={(e) => setConnectionForm({...connectionForm, "Industry ": e.target.value})}
                           />
                         </div>
                         <div className="space-y-2">
@@ -1531,19 +1536,19 @@ export default function AdminPage() {
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="connect_type">Connect Type</Label>
+                          <Label htmlFor="connect_type">Type of connect (Founder/ Employee/ Freelancer)</Label>
                           <Input
                             id="connect_type"
-                            value={connectionForm["Connect Type"]}
-                            onChange={(e) => setConnectionForm({...connectionForm, "Connect Type": e.target.value})}
+                            value={connectionForm["Type of connect (Founder/ Employee/ Freelancer)"]}
+                            onChange={(e) => setConnectionForm({...connectionForm, "Type of connect (Founder/ Employee/ Freelancer)": e.target.value})}
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="designation_level">Designation Level</Label>
+                          <Label htmlFor="designation_level">Designation Type (Senior/ Mid/ Entry Level)</Label>
                           <Input
                             id="designation_level"
-                            value={connectionForm["Designation Level"]}
-                            onChange={(e) => setConnectionForm({...connectionForm, "Designation Level": e.target.value})}
+                            value={connectionForm["Designation Type (Senior/ Mid/ Entry Level)"]}
+                            onChange={(e) => setConnectionForm({...connectionForm, "Designation Type (Senior/ Mid/ Entry Level)": e.target.value})}
                           />
                         </div>
                       </div>
@@ -1557,38 +1562,46 @@ export default function AdminPage() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="email_id">Email</Label>
+                          <Label htmlFor="email_id">Email ID</Label>
                           <Input
                             id="email_id"
                             type="email"
-                            value={connectionForm["Email"]}
-                            onChange={(e) => setConnectionForm({...connectionForm, "Email": e.target.value})}
+                            value={connectionForm["Email ID"]}
+                            onChange={(e) => setConnectionForm({...connectionForm, "Email ID": e.target.value})}
                           />
                         </div>
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="linkedin_url">LinkedIn URL</Label>
+                          <Label htmlFor="linkedin_url">Linkedin URL</Label>
                           <Input
                             id="linkedin_url"
-                            value={connectionForm["LinkedIn URL"]}
-                            onChange={(e) => setConnectionForm({...connectionForm, "LinkedIn URL": e.target.value})}
+                            value={connectionForm["Linkedin "]}
+                            onChange={(e) => setConnectionForm({...connectionForm, "Linkedin ": e.target.value})}
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="post_url">Post URL</Label>
+                          <Label htmlFor="post_url">Featured Post URL</Label>
                           <Input
                             id="post_url"
-                            value={connectionForm["Post URL"]}
-                            onChange={(e) => setConnectionForm({...connectionForm, "Post URL": e.target.value})}
+                            value={connectionForm["Featured post URL "]}
+                            onChange={(e) => setConnectionForm({...connectionForm, "Featured post URL ": e.target.value})}
                           />
                         </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="photo_url">Photo URL</Label>
+                        <Input
+                          id="photo_url"
+                          value={connectionForm["Photo URL"]}
+                          onChange={(e) => setConnectionForm({...connectionForm, "Photo URL": e.target.value})}
+                        />
                       </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="featured"
-                          checked={connectionForm["Featured"] === 'Yes'}
-                          onCheckedChange={(checked) => setConnectionForm({...connectionForm, "Featured": checked ? 'Yes' : 'No'})}
+                          checked={connectionForm["Featured "] === 'Yes'}
+                          onCheckedChange={(checked) => setConnectionForm({...connectionForm, "Featured ": checked ? 'Yes' : 'No'})}
                         />
                         <Label htmlFor="featured">Featured</Label>
                       </div>
@@ -1648,15 +1661,15 @@ export default function AdminPage() {
                           {connections.map((conn) => (
                             <TableRow key={conn.id}>
                               <TableCell className="font-medium">{conn["Name"]}</TableCell>
-                              <TableCell>{conn["Designation"]}</TableCell>
+                              <TableCell>{conn["Designation "]}</TableCell>
                               <TableCell className="hidden sm:table-cell">{conn["Organization Name"] || '-'}</TableCell>
-                              <TableCell className="hidden md:table-cell">{conn["Industry"] || '-'}</TableCell>
-                              <TableCell className="hidden lg:table-cell">{conn["Connect Type"] || '-'}</TableCell>
+                              <TableCell className="hidden md:table-cell">{conn["Industry "] || '-'}</TableCell>
+                              <TableCell className="hidden lg:table-cell">{conn["Type of connect (Founder/ Employee/ Freelancer)"] || '-'}</TableCell>
                               <TableCell className="hidden lg:table-cell">{conn["Phone Number"] || '-'}</TableCell>
-                              <TableCell className="hidden xl:table-cell">{conn["Email"] || '-'}</TableCell>
+                              <TableCell className="hidden xl:table-cell">{conn["Email ID"] || '-'}</TableCell>
                               <TableCell>
-                                <Badge variant={conn["Featured"] === 'Yes' ? 'default' : 'secondary'} className={conn["Featured"] === 'Yes' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}>
-                                  {conn["Featured"] === 'Yes' ? 'Featured' : 'Regular'}
+                                <Badge variant={conn["Featured "] === 'Yes' ? 'default' : 'secondary'} className={conn["Featured "] === 'Yes' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}>
+                                  {conn["Featured "] === 'Yes' ? 'Featured' : 'Regular'}
                                 </Badge>
                               </TableCell>
                               <TableCell className="hidden md:table-cell">
