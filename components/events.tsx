@@ -59,7 +59,7 @@ export const LayoutGrid = ({ cards }: { cards: Card[] }) => {
 function BentoCard({ card, size, area }: { card: Card; size: "large" | "tall" | "small" | "wide" | "normal"; area?: string }) {
   // Use hover for details
   const [hovered, setHovered] = React.useState(false);
-  let base =
+  const base =
     size === "large"
       ? "row-span-2 col-span-1 h-[520px] md:h-[520px]"
       : size === "tall"
@@ -69,6 +69,16 @@ function BentoCard({ card, size, area }: { card: Card; size: "large" | "tall" | 
       : size === "wide"
       ? "row-span-1 col-span-2 h-[250px]"
       : "h-[300px]";
+
+  // Safely extract the event name from card.content
+  let eventName = "";
+  if (React.isValidElement(card.content)) {
+    const contentElement = card.content as React.ReactElement<{ children: React.ReactNode }>;
+    const childrenArray = React.Children.toArray(contentElement.props.children);
+    if (childrenArray.length > 0 && React.isValidElement(childrenArray[0])) {
+      eventName = (childrenArray[0] as React.ReactElement<{ children: React.ReactNode }> ).props.children as string;
+    }
+  }
   return (
     <motion.div
       className={cn(
@@ -129,15 +139,25 @@ function BentoCard({ card, size, area }: { card: Card; size: "large" | "tall" | 
         style={{ pointerEvents: hovered ? 'auto' : 'none' }}
       >
         <h3 className="text-xl md:text-2xl font-extrabold text-blue-100 truncate">
-          {typeof card.content === "object" && (card.content as any).props?.children[0]?.props?.children || ""}
+          {eventName}
         </h3>
       </motion.div>
     </motion.div>
   );
 }
 
+type EventType = {
+  id: number;
+  name: string;
+  date: string;
+  time?: string;
+  location: string;
+  status: string;
+  image_url?: string;
+};
+
 export default function Events() {
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<EventType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -177,7 +197,7 @@ export default function Events() {
     content: (
       <div>
         <h3 className="text-2xl font-bold mb-2">{event.name}</h3>
-        <div className="flex flex-col gap-1 text-base">
+        <div className="flex flex-col gap-1 text-base mb-4">
           <span><b>Date:</b> {event.date}</span>
           {event.time && <span><b>Time:</b> {event.time}</span>}
           <span><b>Location:</b> {event.location}</span>
@@ -186,12 +206,5 @@ export default function Events() {
     ),
   }));
 
-  return (
-    <section className="w-full max-w-7xl mx-auto py-12 px-4">
-      <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-blue-700 text-center mb-10">
-        Events
-      </h2>
-      <LayoutGrid cards={cards} />
-    </section>
-  );
+  return <LayoutGrid cards={cards} />;
 }

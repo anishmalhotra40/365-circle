@@ -230,19 +230,13 @@ export default function HomePage() {
                   variant="outline"
                   className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700 hover:shadow-blue-200/60 hover:scale-105 rounded-full px-6 py-2 transition-all duration-300"
                   onClick={() => {
-                    const eventsSection = document.getElementById("events");
+                    const eventsSection = document.getElementById('events');
                     if (eventsSection) {
-                      eventsSection.scrollIntoView({ behavior: "smooth" });
+                      eventsSection.scrollIntoView({ behavior: 'smooth' });
                     }
                   }}
                 >
                   View Events
-                </Button>
-                <Button
-                  className="bg-blue-600 text-white hover:bg-blue-700 hover:shadow-blue-200/60 hover:scale-105 rounded-full px-6 py-2 transition-all duration-300"
-                  onClick={() => openModal("event")}
-                >
-                  Register Now
                 </Button>
               </div>
             </div>
@@ -255,7 +249,19 @@ export default function HomePage() {
       <Connections />
 
       <section id="events">
+        <div className="text-center mb-10">
+          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-blue-700">Events</h2>
+          <p className="text-lg md:text-xl text-blue-800/80 mt-2">Past and Upcoming</p>
+        </div>
         <Events />
+        <div className="flex justify-center mt-8 mb-20">
+          <Button
+            className="bg-blue-600 text-white hover:bg-blue-700 hover:shadow-blue-200/60 hover:scale-105 rounded-full px-8 py-3 text-lg transition-all duration-300"
+            onClick={() => openModal("event")}
+          >
+            Register Now
+          </Button>
+        </div>
       </section>
 
       {/* Newsletter Section */}

@@ -2131,7 +2131,7 @@ export default function AdminPage() {
                         </div>
                         {eventForm.image_url && (
                           <div className="mt-2">
-                            <img src={eventForm.image_url} alt="Event preview" className="w-32 h-20 object-cover rounded" />
+                            <Image src={eventForm.image_url} alt="Event preview" width={128} height={80} className="w-32 h-20 object-cover rounded" />
                           </div>
                         )}
                       </div>
@@ -2197,7 +2197,7 @@ export default function AdminPage() {
                           <TableCell className="font-medium">
                             <div className="flex items-center gap-2">
                               {event.image_url && (
-                                <img src={event.image_url} alt={event.name} className="w-8 h-8 rounded object-cover" />
+                                <Image src={event.image_url} alt={event.name} width={32} height={32} className="w-8 h-8 rounded object-cover" />
                               )}
                               <span>{event.name}</span>
                             </div>

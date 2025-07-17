@@ -44,10 +44,13 @@ const BrandCarousel: React.FC = () => {
           alignItems: 'flex-start',
         }}
       >
-        <img
+        <Image
           src="/logo.png"
           alt="365 Circle Logo Watermark"
+          width={200}
+          height={200}
           className="w-[200px] h-[200px] md:w-[200px] md:h-[200px] object-contain mt-[-4px] md:mt-[-4px]"
+          priority
         />
       </div>
 

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { SpotlightCardWithReveal } from "./SpotlightCardWithReveal";
+import Image from "next/image";
 
 export const WhoWeServe = () => {
   return (
@@ -20,10 +21,12 @@ export const WhoWeServe = () => {
           className="relative bg-blue-100/60 backdrop-blur-md rounded-xl p-6 md:p-8 border border-blue-200 hover:shadow-xl hover:shadow-blue-200/60 hover:scale-[1.04] transition-all duration-300 group overflow-hidden"
         >
           {/* Card image as background */}
-          <img
+          <Image
             src="/feature1.png"
             alt="CXOs, Founders & Business Leaders"
+            fill
             className="absolute inset-0 w-full h-full object-cover scale-175 rounded-xl opacity-20 group-hover:opacity-80 transition-opacity duration-500 pointer-events-none select-none z-0"
+            priority
           />
           <div className="relative z-10 transition-all duration-500 group-hover:opacity-0 group-hover:pointer-events-none">
             <h3 className="text-xl md:text-2xl font-bold text-blue-500 mb-4 group-hover:text-blue-600 transition-colors duration-300">
@@ -44,10 +47,12 @@ export const WhoWeServe = () => {
             color="#93c5fd" // Tailwind blue-300
             className="relative bg-blue-100/60 backdrop-blur-md rounded-xl p-6 md:p-8 border border-blue-200 hover:shadow-xl hover:shadow-blue-200/60 hover:scale-[1.04] transition-all duration-300 group overflow-hidden"
           >
-            <img
+            <Image
               src="/feature2.png"
               alt="Businesses"
+              fill
               className="absolute inset-0 w-full h-full object-cover scale-175 rounded-xl opacity-15 group-hover:opacity-80 transition-opacity duration-500 pointer-events-none select-none z-0"
+              priority
             />
             <div className="relative z-10 transition-all duration-500 group-hover:opacity-0 group-hover:pointer-events-none">
               <h3 className="text-xl md:text-2xl font-bold text-blue-500 mb-4 group-hover:text-blue-600 transition-colors duration-300">
@@ -65,10 +70,12 @@ export const WhoWeServe = () => {
             color="#93c5fd" // Tailwind blue-300
             className="relative bg-blue-100/60 backdrop-blur-md rounded-xl p-6 md:p-8 border border-blue-200 hover:shadow-xl hover:shadow-blue-200/60 hover:scale-[1.04] transition-all duration-300 group overflow-hidden"
           >
-            <img
+            <Image
               src="/feature3.png"
               alt="Aspirants & Emerging Leaders"
+              fill
               className="absolute inset-0 w-full h-full object-cover scale-175 rounded-xl opacity-15 group-hover:opacity-80 transition-opacity duration-500 pointer-events-none select-none z-0"
+              priority
             />
             <div className="relative z-10 transition-all duration-500 group-hover:opacity-0 group-hover:pointer-events-none">
               <h3 className="text-xl md:text-2xl font-bold text-blue-500 mb-4 group-hover:text-blue-600 transition-colors duration-300">
