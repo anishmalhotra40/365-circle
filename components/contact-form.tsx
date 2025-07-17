@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { useState } from "react"
 import type React from "react"
 
-export default function ContactForm(props: React.ComponentPropsWithoutRef<"section">) {
+export default function ContactForm() {
   const [showSuccess, setShowSuccess] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
