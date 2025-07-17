@@ -15,12 +15,6 @@ import { MoreHorizontal, PlusCircle, Edit, Trash2, Upload, Download, Users, Star
 import Image from "next/image"
 import { useState, useEffect, useRef, useCallback } from "react"
 
-const dummyEvents = [
-  { id: 1, name: "Virtual Networking Meetup", date: "2023-11-15", location: "Online", status: "Upcoming" },
-  { id: 2, name: "Creative Session: Design Thinking", date: "2023-12-05", location: "New York, NY", status: "Upcoming" },
-  { id: 3, name: "Tech Industry Mixer", date: "2023-09-20", location: "San Francisco, CA", status: "Completed" },
-];
-
 interface Connection {
   id: number;
   "Name": string;
@@ -63,6 +57,40 @@ interface FeaturedSubmission {
   created_at: string;
 }
 
+interface Event {
+  id: number;
+  name: string;
+  description?: string;
+  date: string;
+  time?: string;
+  location: string;
+  status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
+  image_url?: string;
+  max_attendees?: number;
+  registration_required: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+interface EventRegistration {
+  id: number;
+  event_id: number;
+  name: string;
+  email: string;
+  phone?: string;
+  company?: string;
+  title?: string;
+  industry?: string;
+  event_preference?: string;
+  created_at: string;
+  events?: {
+    name: string;
+    date: string;
+    time?: string;
+    location: string;
+  };
+}
+
 const initialConnectionData: Omit<Connection, 'id'> = {
   "Name": '',
   "Designation": '',
@@ -79,33 +107,59 @@ const initialConnectionData: Omit<Connection, 'id'> = {
   "Post URL": ''
 };
 
+const initialEventData: Omit<Event, 'id' | 'created_at' | 'updated_at'> = {
+  name: '',
+  description: '',
+  date: '',
+  time: '',
+  location: '',
+  status: 'upcoming',
+  image_url: '',
+  max_attendees: undefined,
+  registration_required: false
+};
+
 export default function AdminPage() {
   const router = useRouter()
   const supabase = createClient()
   
   // Add sidebar and user state
-  const [activeTab, setActiveTab] = useState<'connections' | 'members' | 'featured' | 'events'>('connections')
+  const [activeTab, setActiveTab] = useState<'connections' | 'members' | 'featured' | 'events' | 'registrations'>('connections')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [userEmail, setUserEmail] = useState<string>('')
   const [connections, setConnections] = useState<Connection[]>([])
   const [members, setMembers] = useState<Member[]>([])
   const [featuredSubmissions, setFeaturedSubmissions] = useState<FeaturedSubmission[]>([])
+  const [events, setEvents] = useState<Event[]>([])
+  const [eventRegistrations, setEventRegistrations] = useState<EventRegistration[]>([])
   const [isConnectionDialogOpen, setIsConnectionDialogOpen] = useState(false)
+  const [isEventDialogOpen, setIsEventDialogOpen] = useState(false)
   const [editingConnection, setEditingConnection] = useState<Connection | null>(null)
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null)
   const [connectionForm, setConnectionForm] = useState(initialConnectionData)
+  const [eventForm, setEventForm] = useState(initialEventData)
   const [loading, setLoading] = useState(true)
   const [membersLoading, setMembersLoading] = useState(true)
   const [featuredLoading, setFeaturedLoading] = useState(true)
+  const [eventsLoading, setEventsLoading] = useState(true)
+  const [registrationsLoading, setRegistrationsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [membersError, setMembersError] = useState<string | null>(null)
   const [featuredError, setFeaturedError] = useState<string | null>(null)
+  const [eventsError, setEventsError] = useState<string | null>(null)
+  const [registrationsError, setRegistrationsError] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<'created_at' | 'Name' | 'Designation' | 'Organization Name'>('created_at')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
   const [membersSortBy, setMembersSortBy] = useState<'id' | 'created_at' | 'name' | 'email' | 'company'>('id')
   const [membersSortOrder, setMembersSortOrder] = useState<'asc' | 'desc'>('asc')
   const [featuredSortBy, setFeaturedSortBy] = useState<'id' | 'created_at' | 'name' | 'email' | 'company'>('id')
   const [featuredSortOrder, setFeaturedSortOrder] = useState<'asc' | 'desc'>('asc')
+  const [eventsSortBy, setEventsSortBy] = useState<'id' | 'created_at' | 'name' | 'date' | 'status'>('date')
+  const [eventsSortOrder, setEventsSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [registrationsSortBy, setRegistrationsSortBy] = useState<'id' | 'created_at' | 'name' | 'email' | 'events.name'>('created_at')
+  const [registrationsSortOrder, setRegistrationsSortOrder] = useState<'asc' | 'desc'>('desc')
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const eventImageInputRef = useRef<HTMLInputElement>(null)
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false)
   const [currentPassword, setCurrentPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
@@ -361,11 +415,184 @@ export default function AdminPage() {
     }
   }, [supabase, featuredSortBy, featuredSortOrder])
 
+  const fetchEvents = useCallback(async () => {
+    try {
+      setEventsLoading(true)
+      setEventsError(null)
+      
+      console.log('Fetching events...')
+      
+      const { data, error } = await supabase
+        .from('events')
+        .select('*')
+
+      console.log('Events response:', { data, error })
+
+      if (error) {
+        console.error('Events error details:', error)
+        setEventsError(`Database error: ${error.message}`)
+        return
+      }
+      
+      console.log('Fetched events count:', data?.length || 0)
+      
+      // Sort the data locally
+      let sortedData = data || []
+      if (sortedData.length > 0) {
+        sortedData = [...sortedData].sort((a, b) => {
+          let aValue, bValue
+          
+          switch (eventsSortBy) {
+            case 'id':
+              aValue = a.id
+              bValue = b.id
+              break
+            case 'name':
+              aValue = a.name || ''
+              bValue = b.name || ''
+              break
+            case 'date':
+              aValue = a.date || ''
+              bValue = b.date || ''
+              break
+            case 'status':
+              aValue = a.status || ''
+              bValue = b.status || ''
+              break
+            case 'created_at':
+            default:
+              aValue = a.created_at || ''
+              bValue = b.created_at || ''
+              break
+          }
+          
+          // Handle numeric sorting for ID
+          if (eventsSortBy === 'id') {
+            if (eventsSortOrder === 'asc') {
+              return aValue - bValue
+            } else {
+              return bValue - aValue
+            }
+          }
+          
+          // Handle string sorting for other fields
+          if (typeof aValue === 'string') aValue = aValue.toLowerCase()
+          if (typeof bValue === 'string') bValue = bValue.toLowerCase()
+          
+          if (eventsSortOrder === 'asc') {
+            return aValue < bValue ? -1 : aValue > bValue ? 1 : 0
+          } else {
+            return aValue > bValue ? -1 : aValue < bValue ? 1 : 0
+          }
+        })
+      }
+      
+      setEvents(sortedData)
+    } catch (error) {
+      console.error('Error fetching events:', error)
+      setEventsError(`Failed to fetch events: ${error}`)
+    } finally {
+      setEventsLoading(false)
+    }
+  }, [supabase, eventsSortBy, eventsSortOrder])
+
+  const fetchEventRegistrations = useCallback(async () => {
+    try {
+      setRegistrationsLoading(true)
+      setRegistrationsError(null)
+      
+      console.log('Fetching event registrations...')
+      
+      // Fetch registrations with event data using join
+      const { data, error } = await supabase
+        .from('event_registrations')
+        .select(`
+          *,
+          events (
+            name,
+            date,
+            time,
+            location
+          )
+        `)
+
+      console.log('Event registrations response:', { data, error })
+
+      if (error) {
+        console.error('Event registrations error details:', error)
+        setRegistrationsError(`Database error: ${error.message}`)
+        return
+      }
+      
+      console.log('Fetched event registrations count:', data?.length || 0)
+      
+      // Sort the data locally
+      let sortedData = data || []
+      if (sortedData.length > 0) {
+        sortedData = [...sortedData].sort((a, b) => {
+          let aValue, bValue
+          
+          switch (registrationsSortBy) {
+            case 'id':
+              aValue = a.id
+              bValue = b.id
+              break
+            case 'name':
+              aValue = a.name || ''
+              bValue = b.name || ''
+              break
+            case 'email':
+              aValue = a.email || ''
+              bValue = b.email || ''
+              break
+            case 'events.name':
+              aValue = a.events?.name || ''
+              bValue = b.events?.name || ''
+              break
+            case 'created_at':
+            default:
+              aValue = a.created_at || ''
+              bValue = b.created_at || ''
+              break
+          }
+          
+          // Handle numeric sorting for ID
+          if (registrationsSortBy === 'id') {
+            if (registrationsSortOrder === 'asc') {
+              return aValue - bValue
+            } else {
+              return bValue - aValue
+            }
+          }
+          
+          // Handle string sorting for other fields
+          if (typeof aValue === 'string') aValue = aValue.toLowerCase()
+          if (typeof bValue === 'string') bValue = bValue.toLowerCase()
+          
+          if (registrationsSortOrder === 'asc') {
+            return aValue < bValue ? -1 : aValue > bValue ? 1 : 0
+          } else {
+            return aValue > bValue ? -1 : aValue < bValue ? 1 : 0
+          }
+        })
+      }
+      
+      setEventRegistrations(sortedData)
+    } catch (error) {
+      console.error('Error fetching event registrations:', error)
+      setRegistrationsError(`Failed to fetch event registrations: ${error}`)
+    } finally {
+      setRegistrationsLoading(false)
+    }
+  }, [supabase, registrationsSortBy, registrationsSortOrder])
+
   useEffect(() => {
     fetchConnections()
     fetchMembers()
     fetchFeaturedSubmissions()
-  }, [fetchConnections, fetchMembers, fetchFeaturedSubmissions])
+    fetchEvents()
+    fetchEventRegistrations()
+  }, [fetchConnections, fetchMembers, fetchFeaturedSubmissions, fetchEvents, fetchEventRegistrations])
 
   const handleAddConnection = async () => {
     try {
@@ -456,6 +683,191 @@ export default function AdminPage() {
     }
   }
 
+  const handleDeleteEventRegistration = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this event registration?')) return
+
+    try {
+      const { error } = await supabase
+        .from('event_registrations')
+        .delete()
+        .eq('id', id)
+
+      if (error) throw error
+      
+      await fetchEventRegistrations()
+    } catch (error) {
+      console.error('Error deleting event registration:', error)
+      alert('Error deleting event registration. Please try again.')
+    }
+  }
+
+  const handleAddEvent = async () => {
+    try {
+      // Validate required fields
+      if (!eventForm.name || !eventForm.location || !eventForm.date) {
+        alert('Please fill in all required fields (Name, Location, Date)')
+        return
+      }
+
+      // Prepare the data for insertion
+      const eventData = {
+        name: eventForm.name,
+        description: eventForm.description || null,
+        date: eventForm.date,
+        time: eventForm.time || null,
+        location: eventForm.location,
+        status: eventForm.status,
+        image_url: eventForm.image_url || null,
+        max_attendees: eventForm.max_attendees || null,
+        registration_required: eventForm.registration_required
+      }
+
+      console.log('Adding event with data:', eventData)
+
+      const { data, error } = await supabase
+        .from('events')
+        .insert([eventData])
+        .select()
+
+      if (error) {
+        console.error('Supabase error:', error)
+        throw error
+      }
+      
+      console.log('Event added successfully:', data)
+      await fetchEvents()
+      setIsEventDialogOpen(false)
+      setEventForm(initialEventData)
+      alert('Event added successfully!')
+    } catch (error) {
+      console.error('Error adding event:', error)
+      alert(`Error adding event: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+  }
+
+  const handleEditEvent = async () => {
+    if (!editingEvent) return
+
+    try {
+      // Validate required fields
+      if (!eventForm.name || !eventForm.location || !eventForm.date) {
+        alert('Please fill in all required fields (Name, Location, Date)')
+        return
+      }
+
+      // Prepare the data for update
+      const eventData = {
+        name: eventForm.name,
+        description: eventForm.description || null,
+        date: eventForm.date,
+        time: eventForm.time || null,
+        location: eventForm.location,
+        status: eventForm.status,
+        image_url: eventForm.image_url || null,
+        max_attendees: eventForm.max_attendees || null,
+        registration_required: eventForm.registration_required,
+        updated_at: new Date().toISOString()
+      }
+
+      console.log('Updating event with data:', eventData)
+
+      const { data, error } = await supabase
+        .from('events')
+        .update(eventData)
+        .eq('id', editingEvent.id)
+        .select()
+
+      if (error) {
+        console.error('Supabase error:', error)
+        throw error
+      }
+      
+      console.log('Event updated successfully:', data)
+      await fetchEvents()
+      setIsEventDialogOpen(false)
+      setEditingEvent(null)
+      setEventForm(initialEventData)
+      alert('Event updated successfully!')
+    } catch (error) {
+      console.error('Error updating event:', error)
+      alert(`Error updating event: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+  }
+
+  const handleDeleteEvent = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this event?')) return
+
+    try {
+      // First get the event to check if it has an image
+      const { data: event } = await supabase
+        .from('events')
+        .select('image_url')
+        .eq('id', id)
+        .single()
+
+      // Delete the image from storage if it exists
+      if (event?.image_url) {
+        const imagePath = event.image_url.split('/').pop()
+        if (imagePath) {
+          await supabase.storage
+            .from('event-images')
+            .remove([imagePath])
+        }
+      }
+
+      // Delete the event from database
+      const { error } = await supabase
+        .from('events')
+        .delete()
+        .eq('id', id)
+
+      if (error) throw error
+      
+      await fetchEvents()
+    } catch (error) {
+      console.error('Error deleting event:', error)
+      alert('Error deleting event. Please try again.')
+    }
+  }
+
+  const handleEventImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    // Check file size (250KB = 256000 bytes)
+    if (file.size > 256000) {
+      alert('Image size must be less than 250KB')
+      return
+    }
+
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file')
+      return
+    }
+
+    try {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
+      
+      const { data, error } = await supabase.storage
+        .from('event-images')
+        .upload(fileName, file)
+
+      if (error) throw error
+
+      // Get the public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('event-images')
+        .getPublicUrl(fileName)
+
+      setEventForm({ ...eventForm, image_url: publicUrl })
+    } catch (error) {
+      console.error('Error uploading image:', error)
+      alert('Error uploading image. Please try again.')
+    }
+  }
+
   const openEditDialog = (connection: Connection) => {
     setEditingConnection(connection)
     setConnectionForm({
@@ -476,9 +888,30 @@ export default function AdminPage() {
     setIsConnectionDialogOpen(true)
   }
 
+  const openEditEventDialog = (event: Event) => {
+    setEditingEvent(event)
+    setEventForm({
+      name: event.name,
+      description: event.description || '',
+      date: event.date,
+      time: event.time || '',
+      location: event.location,
+      status: event.status,
+      image_url: event.image_url || '',
+      max_attendees: event.max_attendees,
+      registration_required: event.registration_required
+    })
+    setIsEventDialogOpen(true)
+  }
+
   const resetForm = () => {
     setConnectionForm(initialConnectionData)
     setEditingConnection(null)
+  }
+
+  const resetEventForm = () => {
+    setEventForm(initialEventData)
+    setEditingEvent(null)
   }
 
   const handleLogout = async () => {
@@ -595,6 +1028,82 @@ export default function AdminPage() {
     const url = URL.createObjectURL(blob)
     link.setAttribute('href', url)
     link.setAttribute('download', `365circle-featured-submissions-${new Date().toISOString().split('T')[0]}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  const handleExportEventsCSV = () => {
+    if (events.length === 0) {
+      alert('No event data to export')
+      return
+    }
+
+    const headers = [
+      'ID', 'Name', 'Description', 'Date', 'Time', 'Location', 'Status', 'Max Attendees', 'Registration Required', 'Image URL', 'Created At'
+    ]
+
+    const csvContent = [
+      headers.join(','),
+      ...events.map(event => [
+        event.id,
+        `"${event.name || ''}"`,
+        `"${event.description?.replace(/"/g, '""') || ''}"`,
+        `"${event.date || ''}"`,
+        `"${event.time || ''}"`,
+        `"${event.location || ''}"`,
+        `"${event.status || ''}"`,
+        event.max_attendees || '',
+        event.registration_required ? 'Yes' : 'No',
+        `"${event.image_url || ''}"`,
+        `"${event.created_at ? new Date(event.created_at).toLocaleString() : ''}"`
+      ].join(','))
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', `365circle-events-${new Date().toISOString().split('T')[0]}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  const handleExportRegistrationsCSV = () => {
+    if (eventRegistrations.length === 0) {
+      alert('No event registration data to export')
+      return
+    }
+
+    const headers = [
+      'ID', 'Event Name', 'Event Date', 'Registrant Name', 'Email', 'Phone', 'Company', 'Title', 'Industry', 'Event Preference', 'Registered At'
+    ]
+
+    const csvContent = [
+      headers.join(','),
+      ...eventRegistrations.map(registration => [
+        registration.id,
+        `"${registration.events?.name || ''}"`,
+        `"${registration.events?.date ? new Date(registration.events.date).toLocaleDateString() : ''}"`,
+        `"${registration.name || ''}"`,
+        `"${registration.email || ''}"`,
+        `"${registration.phone || ''}"`,
+        `"${registration.company || ''}"`,
+        `"${registration.title || ''}"`,
+        `"${registration.industry || ''}"`,
+        `"${registration.event_preference || ''}"`,
+        `"${registration.created_at ? new Date(registration.created_at).toLocaleString() : ''}"`
+      ].join(','))
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', `365circle-event-registrations-${new Date().toISOString().split('T')[0]}.csv`)
     link.style.visibility = 'hidden'
     document.body.appendChild(link)
     link.click()
@@ -780,6 +1289,24 @@ export default function AdminPage() {
     }
   }
 
+  const handleEventsSortChange = (newSortBy: typeof eventsSortBy) => {
+    if (newSortBy === eventsSortBy) {
+      setEventsSortOrder(eventsSortOrder === 'asc' ? 'desc' : 'asc')
+    } else {
+      setEventsSortBy(newSortBy)
+      setEventsSortOrder('desc')
+    }
+  }
+
+  const handleRegistrationsSortChange = (newSortBy: typeof registrationsSortBy) => {
+    if (newSortBy === registrationsSortBy) {
+      setRegistrationsSortOrder(registrationsSortOrder === 'asc' ? 'desc' : 'asc')
+    } else {
+      setRegistrationsSortBy(newSortBy)
+      setRegistrationsSortOrder('desc')
+    }
+  }
+
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault()
     setPasswordError(null)
@@ -857,6 +1384,12 @@ export default function AdminPage() {
       label: 'Events',
       icon: Calendar,
       description: 'Manage networking events'
+    },
+    {
+      id: 'registrations' as const,
+      label: 'Event Registrations',
+      icon: Users,
+      description: 'View event registrations'
     }
   ]
 
@@ -1433,57 +1966,417 @@ export default function AdminPage() {
                 <CardTitle className="text-2xl">Manage Events</CardTitle>
                 <CardDescription className="text-blue-800/80">Create and manage networking events.</CardDescription>
               </div>
-              <Button size="sm" className="gap-1 bg-blue-600 hover:bg-blue-700 text-white">
-                <PlusCircle className="h-4 w-4" />
-                Add Event
-              </Button>
+              <div className="flex gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="gap-1 border-blue-200 text-blue-600 hover:bg-blue-50"
+                    >
+                      Sort by {eventsSortBy === 'id' ? 'ID' : eventsSortBy === 'created_at' ? 'Date Created' : eventsSortBy === 'name' ? 'Name' : eventsSortBy === 'date' ? 'Event Date' : 'Status'} {eventsSortOrder === 'asc' ? '↑' : '↓'}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuLabel>Sort Options</DropdownMenuLabel>
+                    <DropdownMenuItem onClick={() => handleEventsSortChange('date')}>
+                      Event Date {eventsSortBy === 'date' && (eventsSortOrder === 'asc' ? '↑' : '↓')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleEventsSortChange('name')}>
+                      Name {eventsSortBy === 'name' && (eventsSortOrder === 'asc' ? '↑' : '↓')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleEventsSortChange('status')}>
+                      Status {eventsSortBy === 'status' && (eventsSortOrder === 'asc' ? '↑' : '↓')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleEventsSortChange('created_at')}>
+                      Date Created {eventsSortBy === 'created_at' && (eventsSortOrder === 'asc' ? '↑' : '↓')}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="gap-1 border-blue-200 text-blue-600 hover:bg-blue-50"
+                  onClick={handleExportEventsCSV}
+                >
+                  <Download className="h-4 w-4" />
+                  Export CSV
+                </Button>
+                <Dialog open={isEventDialogOpen} onOpenChange={(open) => {
+                  setIsEventDialogOpen(open)
+                  if (!open) resetEventForm()
+                }}>
+                  <DialogTrigger asChild>
+                    <Button size="sm" className="gap-1 bg-blue-600 hover:bg-blue-700 text-white">
+                      <PlusCircle className="h-4 w-4" />
+                      Add Event
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle>{editingEvent ? 'Edit Event' : 'Add New Event'}</DialogTitle>
+                      <DialogDescription>
+                        {editingEvent ? 'Update the event details below.' : 'Fill in the details to create a new event.'}
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="event_name">Event Name *</Label>
+                          <Input
+                            id="event_name"
+                            value={eventForm.name}
+                            onChange={(e) => setEventForm({...eventForm, name: e.target.value})}
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="event_location">Location *</Label>
+                          <Input
+                            id="event_location"
+                            value={eventForm.location}
+                            onChange={(e) => setEventForm({...eventForm, location: e.target.value})}
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="event_description">Description</Label>
+                        <Input
+                          id="event_description"
+                          value={eventForm.description}
+                          onChange={(e) => setEventForm({...eventForm, description: e.target.value})}
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="event_date">Date *</Label>
+                          <Input
+                            id="event_date"
+                            type="date"
+                            value={eventForm.date}
+                            onChange={(e) => setEventForm({...eventForm, date: e.target.value})}
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="event_time">Time</Label>
+                          <Input
+                            id="event_time"
+                            type="time"
+                            value={eventForm.time}
+                            onChange={(e) => setEventForm({...eventForm, time: e.target.value})}
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="event_status">Status</Label>
+                          <select
+                            id="event_status"
+                            value={eventForm.status}
+                            onChange={(e) => setEventForm({...eventForm, status: e.target.value as Event['status']})}
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
+                          >
+                            <option value="upcoming">Upcoming</option>
+                            <option value="ongoing">Ongoing</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                          </select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="event_max_attendees">Max Attendees</Label>
+                          <Input
+                            id="event_max_attendees"
+                            type="number"
+                            min="1"
+                            value={eventForm.max_attendees || ''}
+                            onChange={(e) => setEventForm({...eventForm, max_attendees: e.target.value ? parseInt(e.target.value) : undefined})}
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="event_image">Event Image (max 250KB)</Label>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            id="event_image"
+                            type="file"
+                            ref={eventImageInputRef}
+                            onChange={handleEventImageUpload}
+                            accept="image/*"
+                            className="flex-1"
+                          />
+                          {eventForm.image_url && (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setEventForm({...eventForm, image_url: ''})}
+                            >
+                              Remove
+                            </Button>
+                          )}
+                        </div>
+                        {eventForm.image_url && (
+                          <div className="mt-2">
+                            <img src={eventForm.image_url} alt="Event preview" className="w-32 h-20 object-cover rounded" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="registration_required"
+                          checked={eventForm.registration_required}
+                          onCheckedChange={(checked) => setEventForm({...eventForm, registration_required: !!checked})}
+                        />
+                        <Label htmlFor="registration_required">Registration Required</Label>
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button variant="outline" onClick={() => setIsEventDialogOpen(false)}>
+                        Cancel
+                      </Button>
+                      <Button onClick={editingEvent ? handleEditEvent : handleAddEvent}>
+                        {editingEvent ? 'Update' : 'Add'} Event
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="max-h-96 overflow-y-auto border rounded-md">
-                <Table>
-                  <TableHeader className="sticky top-0 bg-white z-10 border-b">
-                    <TableRow>
-                      <TableHead>Event Name</TableHead>
-                      <TableHead className="hidden md:table-cell">Date</TableHead>
-                      <TableHead className="hidden md:table-cell">Location</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead><span className="sr-only">Actions</span></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {dummyEvents.map((event) => (
-                      <TableRow key={event.id}>
-                        <TableCell className="font-medium">{event.name}</TableCell>
-                        <TableCell className="hidden md:table-cell">{event.date}</TableCell>
-                        <TableCell className="hidden md:table-cell">{event.location}</TableCell>
-                        <TableCell>
-                          <Badge variant={event.status === 'Upcoming' ? 'default' : 'secondary'} className={event.status === 'Upcoming' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}>{event.status}</Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="outline" className="h-8 w-8 p-0 rounded-full">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-56">
-                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem>
-                                <Edit className="mr-2 h-4 w-4" />
-                                Edit
-                              </DropdownMenuItem>
-                              <DropdownMenuItem className="text-red-600">
-                                <Trash2 className="mr-2 h-4 w-4" />
-                                Delete
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
+              {eventsLoading ? (
+                <div className="flex justify-center p-8">
+                  <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-2"></div>
+                    <p>Loading events...</p>
+                  </div>
+                </div>
+              ) : eventsError ? (
+                <div className="flex flex-col items-center justify-center p-8">
+                  <p className="text-red-600 mb-4">{eventsError}</p>
+                  <Button onClick={fetchEvents} variant="outline">
+                    Retry
+                  </Button>
+                </div>
+              ) : events.length === 0 ? (
+                <div className="flex flex-col items-center justify-center p-8">
+                  <p className="text-gray-500 mb-4">No events found</p>
+                  <p className="text-sm text-gray-400">Create your first event to get started</p>
+                </div>
+              ) : (
+                <div className="max-h-96 overflow-y-auto border rounded-md">
+                  <Table>
+                    <TableHeader className="sticky top-0 bg-white z-10 border-b">
+                      <TableRow>
+                        <TableHead>Event Name</TableHead>
+                        <TableHead className="hidden sm:table-cell">Date</TableHead>
+                        <TableHead className="hidden md:table-cell">Time</TableHead>
+                        <TableHead className="hidden md:table-cell">Location</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="hidden lg:table-cell">Attendees</TableHead>
+                        <TableHead className="hidden lg:table-cell">Registration</TableHead>
+                        <TableHead><span className="sr-only">Actions</span></TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {events.map((event) => (
+                        <TableRow key={event.id}>
+                          <TableCell className="font-medium">
+                            <div className="flex items-center gap-2">
+                              {event.image_url && (
+                                <img src={event.image_url} alt={event.name} className="w-8 h-8 rounded object-cover" />
+                              )}
+                              <span>{event.name}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            {event.date ? new Date(event.date).toLocaleDateString() : '-'}
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">{event.time || '-'}</TableCell>
+                          <TableCell className="hidden md:table-cell">{event.location}</TableCell>
+                          <TableCell>
+                            <Badge 
+                              variant={event.status === 'upcoming' ? 'default' : event.status === 'ongoing' ? 'secondary' : event.status === 'completed' ? 'outline' : 'destructive'} 
+                              className={
+                                event.status === 'upcoming' ? 'bg-blue-100 text-blue-800' : 
+                                event.status === 'ongoing' ? 'bg-green-100 text-green-800' :
+                                event.status === 'completed' ? 'bg-gray-100 text-gray-800' :
+                                'bg-red-100 text-red-800'
+                              }
+                            >
+                              {event.status.charAt(0).toUpperCase() + event.status.slice(1)}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="hidden lg:table-cell">{event.max_attendees || 'Unlimited'}</TableCell>
+                          <TableCell className="hidden lg:table-cell">
+                            <Badge variant={event.registration_required ? 'default' : 'secondary'}>
+                              {event.registration_required ? 'Required' : 'Not Required'}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className="h-8 w-8 p-0 rounded-full">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="w-56">
+                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                <DropdownMenuItem onClick={() => openEditEventDialog(event)}>
+                                  <Edit className="mr-2 h-4 w-4" />
+                                  Edit
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleDeleteEvent(event.id)} className="text-red-600">
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Delete
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )
+
+      case 'registrations':
+        return (
+          <Card className="border-blue-100 shadow-sm">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-2xl">Event Registrations</CardTitle>
+                <CardDescription className="text-blue-800/80">View and manage event registrations.</CardDescription>
               </div>
+              <div className="flex gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="gap-1 border-blue-200 text-blue-600 hover:bg-blue-50"
+                    >
+                      Sort by {registrationsSortBy === 'id' ? 'ID' : registrationsSortBy === 'created_at' ? 'Date' : registrationsSortBy === 'name' ? 'Name' : registrationsSortBy === 'email' ? 'Email' : 'Event'} {registrationsSortOrder === 'asc' ? '↑' : '↓'}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuLabel>Sort Options</DropdownMenuLabel>
+                    <DropdownMenuItem onClick={() => handleRegistrationsSortChange('created_at')}>
+                      Date Registered {registrationsSortBy === 'created_at' && (registrationsSortOrder === 'asc' ? '↑' : '↓')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleRegistrationsSortChange('events.name')}>
+                      Event Name {registrationsSortBy === 'events.name' && (registrationsSortOrder === 'asc' ? '↑' : '↓')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleRegistrationsSortChange('name')}>
+                      Registrant Name {registrationsSortBy === 'name' && (registrationsSortOrder === 'asc' ? '↑' : '↓')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleRegistrationsSortChange('email')}>
+                      Email {registrationsSortBy === 'email' && (registrationsSortOrder === 'asc' ? '↑' : '↓')}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="gap-1 border-blue-200 text-blue-600 hover:bg-blue-50"
+                  onClick={handleExportRegistrationsCSV}
+                >
+                  <Download className="h-4 w-4" />
+                  Export CSV
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {registrationsLoading ? (
+                <div className="flex justify-center p-8">
+                  <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-2"></div>
+                    <p>Loading event registrations...</p>
+                  </div>
+                </div>
+              ) : registrationsError ? (
+                <div className="flex flex-col items-center justify-center p-8">
+                  <p className="text-red-600 mb-4">{registrationsError}</p>
+                  <Button onClick={fetchEventRegistrations} variant="outline">
+                    Retry
+                  </Button>
+                </div>
+              ) : eventRegistrations.length === 0 ? (
+                <div className="flex flex-col items-center justify-center p-8">
+                  <p className="text-gray-500 mb-4">No event registrations found</p>
+                  <p className="text-sm text-gray-400">Registrations will appear here when people register for events</p>
+                </div>
+              ) : (
+                <div className="max-h-96 overflow-y-auto border rounded-md">
+                  <Table>
+                    <TableHeader className="sticky top-0 bg-white z-10 border-b">
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Event</TableHead>
+                        <TableHead>Event Date</TableHead>
+                        <TableHead>Registrant</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead className="hidden sm:table-cell">Phone</TableHead>
+                        <TableHead className="hidden md:table-cell">Company</TableHead>
+                        <TableHead className="hidden lg:table-cell">Title</TableHead>
+                        <TableHead className="hidden lg:table-cell">Industry</TableHead>
+                        <TableHead className="hidden xl:table-cell">Preference</TableHead>
+                        <TableHead className="hidden md:table-cell">Registered</TableHead>
+                        <TableHead><span className="sr-only">Actions</span></TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {eventRegistrations.map((registration) => (
+                        <TableRow key={registration.id}>
+                          <TableCell className="font-medium">{registration.id}</TableCell>
+                          <TableCell className="font-medium">
+                            <div className="flex flex-col">
+                              <span>{registration.events?.name || 'Unknown Event'}</span>
+                              <span className="text-xs text-gray-500">{registration.events?.location}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-col">
+                              <span>{registration.events?.date ? new Date(registration.events.date).toLocaleDateString() : '-'}</span>
+                              <span className="text-xs text-gray-500">{registration.events?.time || 'TBA'}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="font-medium">{registration.name}</TableCell>
+                          <TableCell>{registration.email}</TableCell>
+                          <TableCell className="hidden sm:table-cell">{registration.phone || '-'}</TableCell>
+                          <TableCell className="hidden md:table-cell">{registration.company || '-'}</TableCell>
+                          <TableCell className="hidden lg:table-cell">{registration.title || '-'}</TableCell>
+                          <TableCell className="hidden lg:table-cell">{registration.industry || '-'}</TableCell>
+                          <TableCell className="hidden xl:table-cell">{registration.event_preference || '-'}</TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            {registration.created_at ? new Date(registration.created_at).toLocaleString() : '-'}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className="h-8 w-8 p-0 rounded-full">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="w-56">
+                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                <DropdownMenuItem onClick={() => handleDeleteEventRegistration(registration.id)} className="text-red-600">
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Delete Registration
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
             </CardContent>
           </Card>
         )
@@ -1661,5 +2554,4 @@ export default function AdminPage() {
     </div>
   )
 }
-
 

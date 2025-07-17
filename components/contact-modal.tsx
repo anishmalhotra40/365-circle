@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
@@ -22,6 +22,18 @@ interface ContactModalProps {
   className?: string
 }
 
+interface Event {
+  id: number
+  name: string
+  description?: string
+  date: string
+  time?: string
+  location: string
+  status: string
+  max_attendees?: number
+  registration_required: boolean
+}
+
 export default function ContactModal({ 
   isOpen, 
   onClose, 
@@ -39,11 +51,42 @@ export default function ContactModal({
     experience: "",
     interests: [] as string[],
     eventPreference: "",
+    selectedEventId: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [events, setEvents] = useState<Event[]>([])
+  const [eventsLoading, setEventsLoading] = useState(false)
 
   const supabase = createClient()
+
+  // Fetch events when modal opens for event type
+  useEffect(() => {
+    if (isOpen && type === "event") {
+      fetchEvents()
+    }
+  }, [isOpen, type])
+
+  const fetchEvents = async () => {
+    try {
+      setEventsLoading(true)
+      const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .eq('registration_required', true)
+        .eq('status', 'upcoming')
+        .gte('date', new Date().toISOString().split('T')[0]) // Only future events
+        .order('date', { ascending: true })
+
+      if (error) throw error
+      setEvents(data || [])
+    } catch (error) {
+      console.error('Error fetching events:', error)
+      setSubmitError('Failed to load events. Please try again.')
+    } finally {
+      setEventsLoading(false)
+    }
+  }
 
   const getModalContent = () => {
     switch (type) {
@@ -65,7 +108,7 @@ export default function ContactModal({
         return {
           title: "Register for Events",
           description: "Register for our upcoming networking events and connect with like-minded professionals.",
-          submitText: "Register for Events",
+          submitText: "Register for Event",
         }
       default:
         return {
@@ -153,6 +196,77 @@ export default function ContactModal({
         }
 
         alert('Thank you for your featured application! We will review your submission and get back to you soon.')
+      } else if (type === "event") {
+        // Validate event selection
+        if (!formData.selectedEventId) {
+          setSubmitError('Please select an event to register for.')
+          return
+        }
+
+        // Check if user is already registered for this event
+        const { data: existingRegistration, error: checkError } = await supabase
+          .from('event_registrations')
+          .select('id')
+          .eq('event_id', formData.selectedEventId)
+          .eq('email', formData.email)
+          .single()
+
+        if (checkError && checkError.code !== 'PGRST116') {
+          throw checkError
+        }
+
+        if (existingRegistration) {
+          setSubmitError('You are already registered for this event.')
+          return
+        }
+
+        // Get event details for confirmation
+        const { data: eventData, error: eventError } = await supabase
+          .from('events')
+          .select('name, date, time, location, max_attendees')
+          .eq('id', formData.selectedEventId)
+          .single()
+
+        if (eventError) throw eventError
+
+        // Check if event is full
+        if (eventData.max_attendees) {
+          const { count, error: countError } = await supabase
+            .from('event_registrations')
+            .select('*', { count: 'exact', head: true })
+            .eq('event_id', formData.selectedEventId)
+
+          if (countError) throw countError
+
+          if (count && count >= eventData.max_attendees) {
+            setSubmitError('Sorry, this event is full. Please select another event.')
+            return
+          }
+        }
+
+        // Insert new event registration
+        const { error: insertError } = await supabase
+          .from('event_registrations')
+          .insert([{
+            event_id: formData.selectedEventId,
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone || null,
+            company: formData.company || null,
+            title: formData.title || null,
+            industry: formData.industry || null,
+            event_preference: formData.eventPreference || null
+          }])
+
+        if (insertError) throw insertError
+
+        alert(`Thank you for registering for "${eventData.name}"! 
+Event Details:
+Date: ${new Date(eventData.date).toLocaleDateString()}
+Time: ${eventData.time || 'TBA'}
+Location: ${eventData.location}
+
+We will send you a confirmation email with more details.`)
       } else {
         // Handle other form types (event, etc.)
         console.log("Form submitted:", { type, ...formData })
@@ -173,6 +287,7 @@ export default function ContactModal({
         experience: "",
         interests: [],
         eventPreference: "",
+        selectedEventId: "",
       })
     } catch (error) {
       console.error('Error submitting form:', error)
@@ -353,33 +468,60 @@ export default function ContactModal({
           )}
 
           {type === "event" && (
-            <div className="space-y-2">
-              <Label htmlFor="eventPreference" className="text-blue-800 font-medium">
-                Which type of events interest you most?
-              </Label>
-              <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, eventPreference: value }))}>
-                <SelectTrigger className="border-blue-300 focus:border-blue-500">
-                  <SelectValue placeholder="Select event type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="networking">
-                    Networking Meetups
-                  </SelectItem>
-                  <SelectItem value="creative">
-                    Creative Sessions
-                  </SelectItem>
-                  <SelectItem value="industry">
-                    Industry-Specific Events
-                  </SelectItem>
-                  <SelectItem value="sip-slurp">
-                    Sip &amp; Slurp Gatherings
-                  </SelectItem>
-                  <SelectItem value="all">
-                    All Events
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="selectedEvent" className="text-blue-800 font-medium">
+                  Select Event to Register For *
+                </Label>
+                {eventsLoading ? (
+                  <div className="p-4 text-center text-blue-600">Loading events...</div>
+                ) : events.length === 0 ? (
+                  <div className="p-4 text-center text-gray-600">
+                    No upcoming events with registration available at the moment.
+                  </div>
+                ) : (
+                  <Select 
+                    onValueChange={(value) => setFormData((prev) => ({ ...prev, selectedEventId: value }))}
+                    required
+                  >
+                    <SelectTrigger className="border-blue-300 focus:border-blue-500">
+                      <SelectValue placeholder="Select an event" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {events.map((event) => (
+                        <SelectItem key={event.id} value={event.id.toString()}>
+                          <div className="flex flex-col">
+                            <span className="font-medium">{event.name}</span>
+                            <span className="text-sm text-gray-500">
+                              {new Date(event.date).toLocaleDateString()} • {event.location}
+                              {event.max_attendees && ` • Max ${event.max_attendees} attendees`}
+                            </span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="eventPreference" className="text-blue-800 font-medium">
+                  Which type of events interest you most?
+                </Label>
+                <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, eventPreference: value }))}>
+                  <SelectTrigger className="border-blue-300 focus:border-blue-500">
+                    <SelectValue placeholder="Select event type preference" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="networking">Networking Meetups</SelectItem>
+                    <SelectItem value="creative">Creative Sessions</SelectItem>
+                    <SelectItem value="industry">Industry-Specific Events</SelectItem>
+                    <SelectItem value="sip-slurp">Sip &amp; Slurp Gatherings</SelectItem>
+                    <SelectItem value="all">All Events</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </>
           )}
 
           {submitError && (
@@ -400,7 +542,7 @@ export default function ContactModal({
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || (type === "event" && events.length === 0)}
               className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white border-0 disabled:opacity-50"
             >
               {isSubmitting ? 'Submitting...' : content.submitText}
