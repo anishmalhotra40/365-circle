@@ -850,7 +850,7 @@ export default function AdminPage() {
       const fileExt = file.name.split('.').pop()
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
       
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from('event-images')
         .upload(fileName, file)
 
@@ -1918,7 +1918,6 @@ export default function AdminPage() {
                           <TableCell className="font-medium">{submission.id}</TableCell>
                           <TableCell className="font-medium">{submission.name}</TableCell>
                           <TableCell>{submission.email}</TableCell>
-                          <TableCell className="hidden sm:table-cell">{submission.phone || '-'}</TableCell>
                           <TableCell className="hidden md:table-cell">{submission.company || '-'}</TableCell>
                           <TableCell className="hidden lg:table-cell">{submission.title || '-'}</TableCell>
                           <TableCell className="hidden lg:table-cell">{submission.industry || '-'}</TableCell>

@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
@@ -60,14 +60,7 @@ export default function ContactModal({
 
   const supabase = createClient()
 
-  // Fetch events when modal opens for event type
-  useEffect(() => {
-    if (isOpen && type === "event") {
-      fetchEvents()
-    }
-  }, [isOpen, type])
-
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     try {
       setEventsLoading(true)
       const { data, error } = await supabase
@@ -86,7 +79,14 @@ export default function ContactModal({
     } finally {
       setEventsLoading(false)
     }
-  }
+  }, [supabase])
+
+  // Fetch events when modal opens for event type
+  useEffect(() => {
+    if (isOpen && type === "event") {
+      fetchEvents()
+    }
+  }, [isOpen, type, fetchEvents])
 
   const getModalContent = () => {
     switch (type) {
