@@ -100,7 +100,8 @@ export default function HomePage() {
               className="bg-blue-600 text-white hover:bg-blue-700 rounded-full group"
               onClick={() => openModal("member")}
             >
-              Join the Waitllist{" "}
+             Get featured with The 365 Circle{" "}
+             <span className="font-extrabold ml-1">Join the Waitlist</span>{" "}
               <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
             </Button>
           </div>

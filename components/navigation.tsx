@@ -108,7 +108,7 @@ function DesktopNav({ activeSection, isInHero, handleNavigation }: { activeSecti
 					<DropdownMenu key={item.name}>
 						<DropdownMenuTrigger asChild>
 							<button
-								className={`px-3 py-2 text-sm font-medium transition-all duration-300 rounded-full flex items-center ${
+								className={`px-3 py-2 text-sm font-medium transition-all duration-300 rounded-full flex items-center cursor-pointer ${
 									isInHero ? "text-white hover:bg-white/20" : "text-blue-700 hover:bg-blue-100"
 								} ${
 									activeSection === item.href.substring(1) ||
@@ -146,7 +146,7 @@ function DesktopNav({ activeSection, isInHero, handleNavigation }: { activeSecti
 					<button
 						key={item.name}
 						onClick={() => handleNavigation(item.href)}
-						className={`px-3 py-2 text-sm font-medium transition-all duration-300 rounded-full flex items-center ${
+						className={`px-3 py-2 text-sm font-medium transition-all duration-300 rounded-full flex items-center cursor-pointer ${
 							isInHero ? "text-white hover:bg-white/20" : "text-blue-700 hover:bg-blue-100"
 						} ${activeSection === item.href.substring(1)
 							? isInHero
@@ -181,7 +181,7 @@ function MobileNav({
 		<Sheet open={isOpen} onOpenChange={setIsOpen}>
 			<SheetTrigger asChild>
 				<button
-					className={`md:hidden p-0 m-0 bg-transparent border-0 outline-none transition-colors duration-300 ${
+					className={`md:hidden p-0 m-0 bg-transparent border-0 outline-none transition-colors duration-300 cursor-pointer ${
 						isInHero ? "text-white" : "text-blue-700"
 					}`}
 				>
@@ -199,7 +199,7 @@ function MobileNav({
 						<div key={item.name} className="w-full">
 							<button
 								onClick={() => setOpenMobileDropdown(openMobileDropdown === item.name ? null : item.name)}
-								className="flex justify-between items-center w-full text-left text-base font-medium"
+								className="flex justify-between items-center w-full text-left text-base font-medium cursor-pointer"
 							>
 								<span>{item.name}</span>
 								<ChevronDown className={`w-5 h-5 transition-transform ${openMobileDropdown === item.name ? "rotate-180" : ""}`} />
@@ -210,7 +210,7 @@ function MobileNav({
 										<button
 											key={dItem.name}
 											onClick={() => handleNavigation(dItem.href)}
-											className="flex items-center gap-2 text-sm opacity-80 hover:opacity-100"
+											className="flex items-center gap-2 text-sm opacity-80 hover:opacity-100 cursor-pointer"
 										>
 											<dItem.icon className="w-4 h-4" />
 											{dItem.name}
@@ -223,7 +223,7 @@ function MobileNav({
 						<button
 							key={item.name}
 							onClick={() => handleNavigation(item.href)}
-							className="text-left text-base font-medium w-full"
+							className="text-left text-base font-medium w-full cursor-pointer"
 						>
 							{item.name}
 						</button>

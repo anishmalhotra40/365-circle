@@ -112,6 +112,15 @@ const Connections = () => {
         setConnections([]);
       } else {
         setConnections(data || []);
+        // Debug: Log some sample data to understand the structure
+        if (data && data.length > 0) {
+          console.log('Sample connections data:', data.slice(0, 3).map(c => ({ 
+            name: c.Name, 
+            industry: c["Industry "],
+            hasIndustry: !!c["Industry "],
+            industryLength: c["Industry "]?.length
+          })));
+        }
       }
       setLoading(false);
     }
@@ -120,25 +129,103 @@ const Connections = () => {
 
   // Industry filter logic (case-sensitive, fallback to "Others")
   const industryCounts = connections.reduce((acc: Record<string, number>, curr) => {
-    const ind = curr["Industry "] && curr["Industry "] !== "-" && curr["Industry "] !== "Other" ? curr["Industry "] : "Others";
-    acc[ind] = (acc[ind] || 0) + 1;
+    const industry = curr["Industry "];
+    // Check for empty, null, or invalid industry values
+    if (!industry || industry === "-" || industry === "Other" || industry === "Others" || industry.trim() === "" || industry === "N/A" || industry === "NA") {
+      acc["Others"] = (acc["Others"] || 0) + 1;
+    } else {
+      acc[industry] = (acc[industry] || 0) + 1;
+    }
     return acc;
   }, {} as Record<string, number>);
-  const sortedIndustries = Object.entries(industryCounts).sort((a, b) => b[1] - a[1]).map(([ind]) => ind);
-  const topIndustries = sortedIndustries.filter(i => i !== "Others").slice(0, 6);
+  
+  const sortedIndustries = Object.entries(industryCounts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([ind]) => ind);
+  
+  // Get top 7 industries plus "Others" for a total of 8 filters
+  const topIndustries = sortedIndustries
+    .filter(i => i !== "Others")
+    .slice(0, 7);
+  
   const filterOptions = ["All", ...topIndustries, "Others"];
 
   const filteredConnections =
     selectedIndustry === "All"
       ? connections
       : selectedIndustry === "Others"
-      ? connections.filter((p) => !p["Industry "] || p["Industry "] === "-" || p["Industry "] === "Other")
+      ? connections.filter((p) => {
+          const industry = p["Industry "];
+          // Show all connections that are NOT in the top 7 industries
+          return !topIndustries.includes(industry || "");
+        })
       : connections.filter((p) => p["Industry "] === selectedIndustry);
+
+  // Smart sorting function that prioritizes featured people and large companies
+  const sortConnections = (connections: Connection[]) => {
+    return connections.sort((a, b) => {
+      // Priority 1: Featured status (featured people first)
+      const aFeatured = a["Featured "] && (a["Featured "].toLowerCase() === "yes" || a["Featured "].toLowerCase() === "true");
+      const bFeatured = b["Featured "] && (b["Featured "].toLowerCase() === "yes" || b["Featured "].toLowerCase() === "true");
+      
+      if (aFeatured && !bFeatured) return -1;
+      if (!aFeatured && bFeatured) return 1;
+      
+      // Priority 2: Company size (Large companies first)
+      const aCompanySize = a["Organization Type (Small/ Medium/ Large)"];
+      const bCompanySize = b["Organization Type (Small/ Medium/ Large)"];
+      
+      const sizeOrder = { "Large": 3, "Medium": 2, "Small": 1 };
+      const aSizeScore = sizeOrder[aCompanySize as keyof typeof sizeOrder] || 0;
+      const bSizeScore = sizeOrder[bCompanySize as keyof typeof sizeOrder] || 0;
+      
+      if (aSizeScore !== bSizeScore) {
+        return bSizeScore - aSizeScore; // Large companies first
+      }
+      
+      // Priority 3: Position type (Founders first, then Employees, then Freelancers)
+      const aPositionType = a["Type of connect (Founder/ Employee/ Freelancer)"];
+      const bPositionType = b["Type of connect (Founder/ Employee/ Freelancer)"];
+      
+      const positionOrder = { "Founder": 3, "Employee": 2, "Freelancer": 1 };
+      const aPositionScore = positionOrder[aPositionType as keyof typeof positionOrder] || 0;
+      const bPositionScore = positionOrder[bPositionType as keyof typeof positionOrder] || 0;
+      
+      if (aPositionScore !== bPositionScore) {
+        return bPositionScore - aPositionScore; // Founders first
+      }
+      
+      // Priority 4: Photo URL (people with photos first)
+      const aHasPhoto = !!a["Photo URL"] && a["Photo URL"].trim() !== "";
+      const bHasPhoto = !!b["Photo URL"] && b["Photo URL"].trim() !== "";
+      
+      if (aHasPhoto && !bHasPhoto) return -1;
+      if (!aHasPhoto && bHasPhoto) return 1;
+      
+      // Priority 5: Designation level (Senior positions first)
+      const designationOrder = { "Senior": 3, "Mid": 2, "Entry Level": 1 };
+      const aDesignation = a["Designation Type (Senior/ Mid/ Entry Level)"];
+      const bDesignation = b["Designation Type (Senior/ Mid/ Entry Level)"];
+      
+      const aDesignationScore = designationOrder[aDesignation as keyof typeof designationOrder] || 0;
+      const bDesignationScore = designationOrder[bDesignation as keyof typeof designationOrder] || 0;
+      
+      if (aDesignationScore !== bDesignationScore) {
+        return bDesignationScore - aDesignationScore; // Senior positions first
+      }
+      
+      // Priority 6: Alphabetical by name (as final tiebreaker)
+      return (a.Name || "").localeCompare(b.Name || "");
+    });
+  };
+
+  // Apply smart sorting to filtered connections
+  const sortedFilteredConnections = sortConnections(filteredConnections);
 
   // 2 rows x 3 columns = 6 cards per page
   const CARDS_PER_PAGE = 6;
-  const totalPages = Math.ceil(filteredConnections.length / CARDS_PER_PAGE);
-  const paginatedConnections = filteredConnections.slice(
+  const totalPages = Math.ceil(sortedFilteredConnections.length / CARDS_PER_PAGE);
+  const paginatedConnections = sortedFilteredConnections.slice(
     (page - 1) * CARDS_PER_PAGE,
     page * CARDS_PER_PAGE
   );
@@ -158,7 +245,7 @@ const Connections = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <span className="text-red-600 text-lg font-semibold mb-4">{error}</span>
-        <button onClick={() => window.location.reload()} className="px-4 py-2 bg-blue-600 text-white rounded-lg">Retry</button>
+        <button onClick={() => window.location.reload()} className="px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer">Retry</button>
       </div>
     );
   }
@@ -181,7 +268,7 @@ const Connections = () => {
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className={cn(
-                  "flex items-center gap-2 px-5 py-2 text-base font-semibold rounded-xl border border-[#405ff4] bg-white text-[#405ff4] hover:bg-blue-50 shadow transition-all min-w-[180px] justify-between focus:outline-none focus:ring-2 focus:ring-[#405ff4]",
+                  "flex items-center gap-2 px-5 py-2 text-base font-semibold rounded-xl border border-[#405ff4] bg-white text-[#405ff4] hover:bg-blue-50 shadow transition-all min-w-[180px] justify-between focus:outline-none focus:ring-2 focus:ring-[#405ff4] cursor-pointer",
                   dropdownOpen && "ring-2 ring-[#405ff4]"
                 )}
               >
@@ -198,7 +285,7 @@ const Connections = () => {
                         setDropdownOpen(false);
                       }}
                       className={cn(
-                        "w-full text-left px-5 py-3 text-base transition-colors focus:outline-none",
+                        "w-full text-left px-5 py-3 text-base transition-colors focus:outline-none cursor-pointer",
                         selectedIndustry === type
                           ? "bg-[#405ff4] text-white font-bold"
                           : "hover:bg-blue-50 text-[#405ff4]"
@@ -232,7 +319,7 @@ const Connections = () => {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="px-4 py-2 rounded-lg border bg-white text-[#405ff4] font-semibold disabled:opacity-50 flex items-center gap-2 shadow-sm hover:bg-blue-50 transition"
+                className="px-4 py-2 rounded-lg border bg-white text-[#405ff4] font-semibold disabled:opacity-50 flex items-center gap-2 shadow-sm hover:bg-blue-50 transition cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" /> Prev
               </button>
@@ -240,7 +327,7 @@ const Connections = () => {
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="px-4 py-2 rounded-lg border bg-white text-[#405ff4] font-semibold disabled:opacity-50 flex items-center gap-2 shadow-sm hover:bg-blue-50 transition"
+                className="px-4 py-2 rounded-lg border bg-white text-[#405ff4] font-semibold disabled:opacity-50 flex items-center gap-2 shadow-sm hover:bg-blue-50 transition cursor-pointer"
               >
                 Next <ChevronRight className="w-4 h-4" />
               </button>
