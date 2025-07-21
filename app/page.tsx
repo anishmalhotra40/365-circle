@@ -11,8 +11,8 @@ import AboutUsSection from "@/components/about";
 import { WhoWeServe } from "@/components/whoweserve";
 import Events from "@/components/events";
 import Newsletter from "@/components/newsletter";
-import FaqSection from "@/components/faq";
-import Footer from "@/components/footer";
+import FaqSection from "@/components/Faq";
+import Footer from "@/components/Footer";
 import BrandCarousel from "@/components/brand-carousel";
 import Connections from "@/components/connections";
 
