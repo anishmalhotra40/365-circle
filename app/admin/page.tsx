@@ -2420,7 +2420,7 @@ export default function AdminPage() {
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors cursor-pointer ${
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors ${
                   isActive 
                     ? 'bg-blue-100 text-blue-700 border border-blue-200' 
                     : 'text-blue-600 hover:bg-blue-50 hover:text-blue-700'

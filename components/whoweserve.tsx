@@ -14,11 +14,11 @@ export const WhoWeServe = () => {
         </h2>
       </div>
       <div className="grid gap-8 md:grid-cols-3">
-        {/* Left card: lighter blue */}
+        {/* Left card: darker by default, lighter on hover */}
         <SpotlightCardWithReveal
           radius={300}
           color="#60a5fa" // Tailwind blue-400
-          className="relative bg-blue-100/60 backdrop-blur-md rounded-xl p-6 md:p-8 border border-blue-200 hover:shadow-xl hover:shadow-blue-200/60 hover:scale-[1.04] transition-all duration-300 group overflow-hidden"
+          className="relative bg-black/80 hover:bg-blue-100/60 backdrop-blur-md rounded-xl p-6 md:p-8 border border-black hover:border-blue-200 hover:shadow-xl hover:shadow-blue-200/60 hover:scale-[1.04] transition-all transition-colors duration-500 ease-in-out group overflow-hidden"
         >
           {/* Card image as background */}
           <Image
@@ -29,10 +29,10 @@ export const WhoWeServe = () => {
             priority
           />
           <div className="relative z-10 transition-all duration-500 group-hover:opacity-0 group-hover:pointer-events-none">
-            <h3 className="text-xl md:text-2xl font-bold text-blue-500 mb-4 group-hover:text-blue-600 transition-colors duration-300">
+            <h3 className="text-xl md:text-2xl font-bold text-blue-600 mb-4 transition-colors duration-500 ease-in-out">
               For CXOs, Founders & Business Leaders
             </h3>
-            <p className="text-sm md:text-base text-blue-800 leading-relaxed">
+            <p className="text-sm md:text-base text-blue-200 leading-relaxed group-hover:text-blue-800">
               We spotlight career journeys, innovations, and offerings that deserve to be seen.
               From powerful pivots to breakthrough ideas, we help leaders articulate their vision,
               amplify their presence, and unlock new opportunities—through partnerships, strategic collaborations, or community-led engagements.
@@ -45,7 +45,7 @@ export const WhoWeServe = () => {
           <SpotlightCardWithReveal
             radius={300}
             color="#93c5fd" // Tailwind blue-300
-            className="relative bg-blue-100/60 backdrop-blur-md rounded-xl p-6 md:p-8 border border-blue-200 hover:shadow-xl hover:shadow-blue-200/60 hover:scale-[1.04] transition-all duration-300 group overflow-hidden"
+            className="relative bg-black/80 hover:bg-blue-100/60 backdrop-blur-md rounded-xl p-6 md:p-8 border border-black hover:border-blue-200 hover:shadow-xl hover:shadow-blue-200/60 hover:scale-[1.04] transition-all transition-colors duration-500 ease-in-out group overflow-hidden"
           >
             <Image
               src="/feature2.png"
@@ -55,10 +55,10 @@ export const WhoWeServe = () => {
               priority
             />
             <div className="relative z-10 transition-all duration-500 group-hover:opacity-0 group-hover:pointer-events-none">
-              <h3 className="text-xl md:text-2xl font-bold text-blue-500 mb-4 group-hover:text-blue-600 transition-colors duration-300">
+              <h3 className="text-xl md:text-2xl font-bold text-blue-600 mb-4 transition-colors duration-500 ease-in-out">
                 For Businesses
               </h3>
-              <p className="text-sm md:text-base text-blue-800 leading-relaxed">
+              <p className="text-sm md:text-base text-blue-200 leading-relaxed group-hover:text-blue-800">
                 We capture the essence of growing ventures—showcasing what makes them unique
                 and opening doors to collaborative projects, new engagements, and cross-industry partnerships within the Circle.
               </p>
@@ -68,7 +68,7 @@ export const WhoWeServe = () => {
           <SpotlightCardWithReveal
             radius={300}
             color="#93c5fd" // Tailwind blue-300
-            className="relative bg-blue-100/60 backdrop-blur-md rounded-xl p-6 md:p-8 border border-blue-200 hover:shadow-xl hover:shadow-blue-200/60 hover:scale-[1.04] transition-all duration-300 group overflow-hidden"
+            className="relative bg-black/80 hover:bg-blue-100/60 backdrop-blur-md rounded-xl p-6 md:p-8 border border-black hover:border-blue-200 hover:shadow-xl hover:shadow-blue-200/60 hover:scale-[1.04] transition-all transition-colors duration-500 ease-in-out group overflow-hidden"
           >
             <Image
               src="/feature3.png"
@@ -78,10 +78,10 @@ export const WhoWeServe = () => {
               priority
             />
             <div className="relative z-10 transition-all duration-500 group-hover:opacity-0 group-hover:pointer-events-none">
-              <h3 className="text-xl md:text-2xl font-bold text-blue-500 mb-4 group-hover:text-blue-600 transition-colors duration-300">
+              <h3 className="text-xl md:text-2xl font-bold text-blue-600 mb-4 transition-colors duration-500 ease-in-out">
                 For Aspirants & Emerging Leaders
               </h3>
-              <p className="text-sm md:text-base text-blue-800 leading-relaxed">
+              <p className="text-sm md:text-base text-blue-200 leading-relaxed group-hover:text-blue-800">
                 This is where ambition meets access. Discover stories that inspire bold thinking,
                 gain mentorship through authentic conversations, and contribute to a network built on shared growth.
                 <span className="italic"> The 365 Circle </span> offers a space to rise, engage, and lead.

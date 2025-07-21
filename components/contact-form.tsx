@@ -83,7 +83,7 @@ export default function ContactForm() {
               </div>
               <button 
                 onClick={() => setShowSuccess(false)}
-                className="text-green-700 hover:text-green-900 cursor-pointer"
+                className="text-green-700 hover:text-green-900"
               >
                 ×
               </button>
