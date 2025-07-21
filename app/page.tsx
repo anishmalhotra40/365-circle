@@ -18,7 +18,9 @@ import Connections from "@/components/connections";
 
 export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<"featured" | "member" | "event" | null>(null);
+  const [modalType, setModalType] = useState<
+    "featured" | "member" | "event" | null
+  >(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   const openModal = (type: "featured" | "member" | "event") => {
@@ -63,30 +65,30 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/80 z-10"></div>
 
         <div className="relative z-20 flex flex-col items-center justify-center w-full h-full px-4 sm:px-6 lg:px-8 py-20">
-          <div className="flex justify-center mt-4 sm:mt-6">
+          <div className="flex justify-center mt-8 sm:mt-6">
             <a
               href="https://www.transcurators.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3 sm:px-4 md:px-6 py-2 rounded-full backdrop-blur-md bg-blue-600/10 border border-white/30 shadow-lg text-white font-semibold text-xs sm:text-sm flex items-center gap-1 max-w-fit"
+              className="px-4 sm:px-4 md:px-6 py-2 rounded-full backdrop-blur-md bg-blue-600/10 border border-white/30 shadow-lg text-white font-semibold text-xs sm:text-sm flex items-center gap-2 sm:gap-1 max-w-fit"
               style={{
                 boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
                 border: "1px solid rgba(255, 255, 255, 0.3)",
               }}
             >
-              <span className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-blue-500 mr-1 sm:mr-2 animate-pulse"></span>
+              <span className="w-3 h-3 sm:w-3 sm:h-3 rounded-full bg-blue-500 mr-2 sm:mr-2 animate-pulse"></span>
               <span className="whitespace-nowrap">Powered by</span>
               <span className="font-bold whitespace-nowrap">TransCurators</span>
             </a>
           </div>
 
-          <div className="w-full max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto text-center">
-            <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white tracking-tighter mb-4 sm:mb-6 leading-tight px-2">
+          <div className="w-full max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto text-center mt-6 sm:mt-0">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-extrabold text-white tracking-tighter mb-5 sm:mb-6 leading-tight px-2">
               Impactful Stories. Infinite Connections. One Strategic Network.
             </h1>
 
-            <div className="backdrop-blur-md bg-white/5 rounded-xl sm:rounded-2xl shadow-lg px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-6 mx-auto mb-6 sm:mb-8 max-w-full">
-              <p className="text-xs sm:text-sm md:text-base lg:text-lg text-white/90 leading-relaxed">
+            <div className="backdrop-blur-md bg-white/5 rounded-xl sm:rounded-2xl shadow-lg px-5 py-4 sm:px-6 sm:py-4 md:px-8 md:py-6 mx-auto mb-6 sm:mb-8 max-w-full">
+              <p className="text-sm sm:text-base md:text-lg lg:text-lg text-white/90 leading-relaxed">
                 A community-driven initiative that brings together CXOs,
                 founders, business leaders, aspirants, and emerging
                 changemakers—united by the power of storytelling and purposeful
@@ -94,13 +96,13 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="flex flex-col items-center justify-center gap-3 w-full">
+            <div className="flex flex-col items-center justify-center gap-4 w-full">
               <Button
                 size="lg"
                 className="group bg-blue-600 text-white hover:bg-blue-700 rounded-full px-6 sm:px-8 py-4 text-sm sm:text-base md:text-lg w-full sm:w-auto max-w-full sm:max-w-md md:max-w-lg transition-all duration-300"
                 onClick={() => openModal("member")}
               >
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-center">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-2 text-center">
                   <span className="sm:inline hidden leading-tight text-center sm:text-left font-medium">
                     Get Featured with The 365 Circle
                   </span>
@@ -108,7 +110,7 @@ export default function HomePage() {
                     <span className="font-extrabold leading-tight text-center sm:text-left">
                       Join the Waitlist
                     </span>
-                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1" />
+                    <ArrowRight className="w-5 h-5 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1" />
                   </div>
                 </div>
               </Button>
@@ -118,7 +120,7 @@ export default function HomePage() {
 
         <a
           href="#about"
-          className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 z-20 text-white animate-bounce"
+          className="absolute bottom-4 md:bottom-10 left-1/2 -translate-x-1/2 z-20 text-white animate-bounce"
         >
           <ChevronDown className="w-6 h-6 sm:w-8 sm:h-8" />
           <span className="sr-only">Scroll down</span>
