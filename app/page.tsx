@@ -180,11 +180,11 @@ export default function HomePage() {
 			</section>
 
       {/* Other Sections */}
+      <BrandCarousel />
       <Connections />
       <section id="events">
         <Events onRegister={() => openModal('event')} />
       </section>
-      <BrandCarousel />
       <Newsletter />
       <FaqSection />
       <ContactForm />
