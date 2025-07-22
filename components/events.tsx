@@ -57,7 +57,6 @@ export const LayoutGrid = ({ cards }: { cards: Card[] }) => {
 };
 
 function BentoCard({ card, size, area }: { card: Card; size: "large" | "tall" | "small" | "wide" | "normal"; area?: string }) {
-  // Use hover for details
   const [hovered, setHovered] = React.useState(false);
   const base =
     size === "large"
@@ -69,16 +68,6 @@ function BentoCard({ card, size, area }: { card: Card; size: "large" | "tall" | 
       : size === "wide"
       ? "row-span-1 col-span-2 h-[250px]"
       : "h-[300px]";
-
-  // Safely extract the event name from card.content
-  let eventName = "";
-  if (React.isValidElement(card.content)) {
-    const contentElement = card.content as React.ReactElement<{ children: React.ReactNode }>;
-    const childrenArray = React.Children.toArray(contentElement.props.children);
-    if (childrenArray.length > 0 && React.isValidElement(childrenArray[0])) {
-      eventName = (childrenArray[0] as React.ReactElement<{ children: React.ReactNode }> ).props.children as string;
-    }
-  }
   return (
     <motion.div
       className={cn(
@@ -118,30 +107,20 @@ function BentoCard({ card, size, area }: { card: Card; size: "large" | "tall" | 
         alt="thumbnail"
         style={{ zIndex: 1 }}
       />
-      {/* Details on hover only */}
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: hovered ? 1 : 0, y: hovered ? 0 : 40 }}
-        transition={{ type: "spring", stiffness: 120, damping: 18 }}
-        className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-blue-900/90 via-blue-900/60 to-transparent z-30"
-        style={{ pointerEvents: hovered ? 'auto' : 'none' }}
-      >
-        <div className="p-6 text-white">
-          {card.content}
-        </div>
-      </motion.div>
-      {/* Hide event name at bottom unless hovered */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: hovered ? 1 : 0, y: hovered ? 0 : 20 }}
-        transition={{ type: "spring", stiffness: 120, damping: 18 }}
-        className="relative z-10 p-4"
-        style={{ pointerEvents: hovered ? 'auto' : 'none' }}
-      >
-        <h3 className="text-xl md:text-2xl font-extrabold text-blue-100 truncate">
-          {eventName}
-        </h3>
-      </motion.div>
+      {/* Show details overlay only on hover */}
+      {hovered && (
+        <motion.div
+          className="absolute inset-0 z-30 flex items-center justify-center bg-blue-700/70 backdrop-blur-sm"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ type: 'spring', stiffness: 120, damping: 18 }}
+        >
+          <div className="text-white w-full text-center p-6">
+            {card.content}
+          </div>
+        </motion.div>
+      )}
     </motion.div>
   );
 }
@@ -156,7 +135,11 @@ type EventType = {
   image_url?: string;
 };
 
-export default function Events() {
+/**
+ * Events section displays a grid of event cards and a Register Now button.
+ * @param onRegister Optional callback for Register Now button click.
+ */
+export default function Events({ onRegister }: { onRegister?: () => void }) {
   const [events, setEvents] = useState<EventType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -189,15 +172,16 @@ export default function Events() {
   if (error) return <div className="text-center text-red-500 py-10">{error}</div>;
   if (!events.length) return <div className="text-center py-10">No events found.</div>;
 
+  // In the Card mapping, make card.content only the event details (name, date, time, location):
   const cards: Card[] = events.map((event) => ({
     id: event.id,
     thumbnail: event.image_url || "/feature1.png",
     className: "",
     status: event.status,
     content: (
-      <div>
+      <div className="text-white">
         <h3 className="text-2xl font-bold mb-2">{event.name}</h3>
-        <div className="flex flex-col gap-1 text-base mb-4">
+        <div className="flex flex-col gap-1 text-base">
           <span><b>Date:</b> {event.date}</span>
           {event.time && <span><b>Time:</b> {event.time}</span>}
           <span><b>Location:</b> {event.location}</span>
@@ -206,5 +190,18 @@ export default function Events() {
     ),
   }));
 
-  return <LayoutGrid cards={cards} />;
+  return (
+    <section className="py-16">
+      <h2 className="text-4xl md:text-5xl font-extrabold text-blue-900 text-center mb-10">Events</h2>
+      <LayoutGrid cards={cards} />
+      <div className="flex justify-center mt-2">
+        <button
+          className="bg-blue-600 text-white hover:bg-blue-700 rounded-full px-5 py-3 text-base font-semibold shadow-lg transition-all duration-300"
+          onClick={() => onRegister && onRegister()}
+        >
+          Register Now
+        </button>
+      </div>
+    </section>
+  );
 }

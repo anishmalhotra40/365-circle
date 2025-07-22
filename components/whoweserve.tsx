@@ -32,7 +32,7 @@ export const WhoWeServe = () => {
             <h3 className="text-xl md:text-2xl font-bold text-blue-600 mb-4 transition-colors duration-500 ease-in-out">
               For CXOs, Founders & Business Leaders
             </h3>
-            <p className="text-sm md:text-base text-blue-200 leading-relaxed group-hover:text-blue-800">
+            <p className="text-sm md:text-base text-white leading-relaxed group-hover:text-blue-800">
               We spotlight career journeys, innovations, and offerings that deserve to be seen.
               From powerful pivots to breakthrough ideas, we help leaders articulate their vision,
               amplify their presence, and unlock new opportunities—through partnerships, strategic collaborations, or community-led engagements.
@@ -58,7 +58,7 @@ export const WhoWeServe = () => {
               <h3 className="text-xl md:text-2xl font-bold text-blue-600 mb-4 transition-colors duration-500 ease-in-out">
                 For Businesses
               </h3>
-              <p className="text-sm md:text-base text-blue-200 leading-relaxed group-hover:text-blue-800">
+              <p className="text-sm md:text-base text-white leading-relaxed group-hover:text-blue-800">
                 We capture the essence of growing ventures—showcasing what makes them unique
                 and opening doors to collaborative projects, new engagements, and cross-industry partnerships within the Circle.
               </p>
@@ -81,7 +81,7 @@ export const WhoWeServe = () => {
               <h3 className="text-xl md:text-2xl font-bold text-blue-600 mb-4 transition-colors duration-500 ease-in-out">
                 For Aspirants & Emerging Leaders
               </h3>
-              <p className="text-sm md:text-base text-blue-200 leading-relaxed group-hover:text-blue-800">
+              <p className="text-sm md:text-base text-white leading-relaxed group-hover:text-blue-800">
                 This is where ambition meets access. Discover stories that inspire bold thinking,
                 gain mentorship through authentic conversations, and contribute to a network built on shared growth.
                 <span className="italic"> The 365 Circle </span> offers a space to rise, engage, and lead.

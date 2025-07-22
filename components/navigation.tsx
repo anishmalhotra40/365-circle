@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Menu, ChevronDown, Users, Star, UserPlus, CalendarDays } from "lucide-react"
+import { Menu, ChevronDown, Users, Star, CalendarDays } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/dropdown-menu"
@@ -14,10 +14,9 @@ const navItems = [
 		name: "Get Involved",
 		href: "#get-involved",
 		dropdown: [
-			{ name: "365 Connections", href: "/365-connections", icon: Users },
+			{ name: "365 Connections", href: "#connections", icon: Users },
 			{ name: "Get Featured", href: "#get-involved", icon: Star },
-			{ name: "Join the Waitlist", href: "#get-involved", icon: UserPlus },
-			{ name: "Exclusive Events", href: "#get-involved", icon: CalendarDays },
+			{ name: "Exclusive Events", href: "#events", icon: CalendarDays },
 		],
 	},
 	{ name: "Contact Us", href: "#contact" },
@@ -111,12 +110,12 @@ function DesktopNav({ activeSection, isInHero, handleNavigation }: { activeSecti
 								className={`px-3 py-2 text-sm font-medium transition-all duration-300 rounded-full flex items-center ${
 									isInHero ? "text-white hover:bg-white/20" : "text-blue-700 hover:bg-blue-100"
 								} ${
-									activeSection === item.href.substring(1) ||
-									item.dropdown.some((d) => activeSection === d.href.substring(1))
-										? isInHero
-											? "bg-white/30 text-white shadow-md"
-											: "bg-blue-500 text-white shadow-md"
-										: ""
+								activeSection === item.href.substring(1) ||
+								item.dropdown.some((d) => activeSection === d.href.substring(1))
+									? isInHero
+										? "bg-white/30 text-white shadow-md"
+										: "bg-blue-500 text-white shadow-md hover:bg-white hover:text-blue-700"
+									: ""
 								}`}
 							>
 								{item.name}
@@ -133,7 +132,11 @@ function DesktopNav({ activeSection, isInHero, handleNavigation }: { activeSecti
 									key={dropdownItem.name}
 									onClick={() => handleNavigation(dropdownItem.href)}
 									className={`flex items-center gap-3 p-2 transition-colors cursor-pointer ${
-										isInHero ? "hover:bg-white/30" : "hover:bg-blue-100"
+										isInHero
+											? "hover:bg-white/30"
+											: activeSection === dropdownItem.href.substring(1)
+												? "bg-blue-500 text-white hover:bg-white hover:text-blue-700"
+												: "hover:bg-blue-100"
 									}`}
 								>
 									<dropdownItem.icon className={`w-4 h-4 ${isInHero ? "text-white" : "text-blue-500"}`} />
@@ -151,7 +154,7 @@ function DesktopNav({ activeSection, isInHero, handleNavigation }: { activeSecti
 						} ${activeSection === item.href.substring(1)
 							? isInHero
 								? "bg-white/30 text-white shadow-md"
-								: "bg-blue-500 text-white shadow-md"
+								: "bg-blue-500 text-white shadow-md hover:bg-white hover:text-blue-700"
 							: ""}`}
 					>
 						{item.name}

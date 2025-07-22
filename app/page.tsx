@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ChevronDown, ArrowUp } from "lucide-react";
+import { ArrowRight, ChevronDown, ArrowUp, Award, Users } from "lucide-react";
 import Navigation from "@/components/navigation";
 import ContactModal from "@/components/contact-modal";
 import Metrics from "@/components/metrics";
@@ -15,6 +15,8 @@ import FaqSection from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import BrandCarousel from "@/components/brand-carousel";
 import Connections from "@/components/connections";
+import ContactForm from "@/components/contact-form";
+import Head from "next/head";
 
 export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,6 +45,20 @@ export default function HomePage() {
 
   return (
     <div className="bg-white text-blue-900 font-sans min-h-screen overflow-x-hidden">
+      <Head>
+        <title>The 365 Circle | Strategic Networking & Storytelling for Leaders</title>
+        <meta name="description" content="The 365 Circle is a strategic networking and storytelling platform for CXOs, founders, business leaders, and changemakers. Discover inspiring journeys, exclusive events, and a thriving community built on purposeful connections." />
+        <link rel="canonical" href="https://the365circle.com/" />
+        <meta property="og:title" content="The 365 Circle | Strategic Networking & Storytelling for Leaders" />
+        <meta property="og:description" content="A strategic networking and storytelling platform for CXOs, founders, business leaders, and changemakers. Discover inspiring journeys, exclusive events, and a thriving community built on purposeful connections." />
+        <meta property="og:image" content="/logo.png" />
+        <meta property="og:url" content="https://the365circle.com/" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="The 365 Circle | Strategic Networking & Storytelling for Leaders" />
+        <meta name="twitter:description" content="A strategic networking and storytelling platform for CXOs, founders, business leaders, and changemakers. Discover inspiring journeys, exclusive events, and a thriving community built on purposeful connections." />
+        <meta name="twitter:image" content="/logo.png" />
+      </Head>
       <Navigation />
       <ContactModal
         isOpen={isModalOpen}
@@ -89,9 +105,9 @@ export default function HomePage() {
 
             <div className="backdrop-blur-md bg-white/5 rounded-xl sm:rounded-2xl shadow-lg px-5 py-4 sm:px-6 sm:py-4 md:px-8 md:py-6 mx-auto mb-6 sm:mb-8 max-w-full">
               <p className="text-sm sm:text-base md:text-lg lg:text-lg text-white/90 leading-relaxed">
-                A community-driven initiative that brings together CXOs,
+                A community-driven initiative that brings together <span className="text-blue-400 font-extrabold">CXOs,
                 founders, business leaders, aspirants, and emerging
-                changemakers—united by the power of storytelling and purposeful
+                changemakers</span> — united by the power of storytelling and purposeful
                 networking to build a legacy of connection and influence.
               </p>
             </div>
@@ -134,12 +150,44 @@ export default function HomePage() {
       <AboutUsSection />
       <WhoWeServe />
 
+      <section id="get-involved" className="py-20 md:py-20">
+				<div className="container mx-auto px-4">
+					<div className="text-center mb-16">
+						<h2 className="text-4xl font-bold tracking-tight text-blue-900">Join the Circle</h2>
+						<p className="text-lg text-blue-800/80 mt-2 max-w-2xl mx-auto">
+							There are many ways to be part of our growing community.
+						</p>
+					</div>
+					<div className="grid md:grid-cols-2 gap-8 text-center">
+						<div className="bg-white p-8 rounded-2xl border border-blue-100 shadow-sm hover:shadow-xl hover:scale-[1.03] transition-all duration-300 flex flex-col items-center">
+							<Award className="w-12 h-12 text-blue-500 mb-4 drop-shadow-md" />
+							<h3 className="text-2xl font-bold text-blue-900 mb-2">Get Featured</h3>
+							<p className="text-blue-800/80 mb-6 flex-grow">Share your story with our community and inspire others.</p>
+							<Button variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700 rounded-full transition-all duration-300" onClick={() => openModal('featured')}>
+								Apply Now
+							</Button>
+						</div>
+						<div className="bg-white p-8 rounded-2xl border border-blue-100 shadow-sm hover:shadow-xl hover:scale-[1.03] transition-all duration-300 flex flex-col items-center">
+							<Users className="w-12 h-12 text-blue-500 mb-4 drop-shadow-md" />
+							<h3 className="text-2xl font-bold text-blue-900 mb-2">Become a Member</h3>
+							<p className="text-blue-800/80 mb-6 flex-grow">Join our circle for exclusive access to events and networking.</p>
+							<Button className="bg-blue-600 text-white hover:bg-blue-700 rounded-full transition-all duration-300" onClick={() => openModal('member')}>
+								Join Today
+							</Button>
+						</div>
+					</div>
+				</div>
+			</section>
+
       {/* Other Sections */}
-      <Events />
-      <BrandCarousel />
       <Connections />
+      <section id="events">
+        <Events onRegister={() => openModal('event')} />
+      </section>
+      <BrandCarousel />
       <Newsletter />
       <FaqSection />
+      <ContactForm />
       <Footer />
 
       {/* Scroll to Top Button */}

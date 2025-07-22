@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
+import Image from "next/image";
 
 const timelineData = [
   { id: 1, date: "1999 – 2015", title: "D.P.S", position: "Student" },
@@ -13,14 +14,19 @@ const timelineData = [
   { id: 10, date: "2025 – Present", title: "365", position: "Founder" },
 ];
 
-function breakWords(str: string): React.ReactNode {
-  return str.split(' ').map((word: string, i: number) => (
-    <React.Fragment key={i}>
-      {word}
-      <br />
-    </React.Fragment>
-  ));
-}
+// Add a mapping from title to logo file
+const logoMap: Record<string, string> = {
+  'D.P.S': 'dps.png',
+  'Symbiosis SOE': 'SSE.png',
+  'NTPC': 'ntpc.png',
+  'HDFC Bank': 'hdfc.png',
+  'Ken Research': 'ken.png',
+  'Nielsen': 'neilsen.png',
+  'Rakuten Insight': 'rakuten.svg',
+  'EY': 'ey.png', // revert to original
+  'EY-P': 'eyp.png', // revert to original
+  '365': 'logo.png',
+};
 
 export default function Timeline() {
   const timelineRef = useRef<HTMLDivElement>(null);
@@ -75,12 +81,82 @@ export default function Timeline() {
         </div>
         {/* TITLES and POSITIONS below dots */}
         <div className="timeline-row timeline-labels">
-          {timelineData.map((step) => (
-            <div key={step.id} className="timeline-cell timeline-label-cell">
-              <div className="timeline-title">{breakWords(step.title)}</div>
-              <div className="timeline-position">{step.position}</div>
-            </div>
-          ))}
+          {timelineData.map((step, idx) => {
+            // Pulsating shadow only for 365
+            const is365 = step.title === '365';
+            // Position line break logic
+            let positionNode: React.ReactNode = step.position;
+            if (step.position.includes('(Hons)')) {
+              const [before, after] = step.position.split('(Hons)');
+              positionNode = <>{before.trim()}<br/>(Hons){after ? <><br/>{after.trim()}</> : null}</>;
+            } else if (step.position.includes('Trainer')) {
+              const [before, after] = step.position.split('Trainer');
+              positionNode = <>{before.trim()}<br/>Trainer{after ? <><br/>{after.trim()}</> : null}</>;
+            } else if (step.position.includes('->')) {
+              const [from, to] = step.position.split('->');
+              positionNode = <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:2}}>
+                <span>{to.trim()}</span>
+                <span style={{fontSize:18, lineHeight:1, color:'#2563eb', fontWeight:700}}>&uarr;</span>
+                <span>{from.trim()}</span>
+              </div>;
+            }
+            return (
+              <div key={step.id} className="timeline-cell timeline-label-cell">
+                <div className="timeline-logo" style={{ marginBottom: 8, display: 'flex', justifyContent: 'center', position: 'relative' }}>
+                  {is365 && (
+                    <span className="ey-pulse" style={{
+                      position: 'absolute',
+                      left: '50%',
+                      top: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: idx < 7 ? 60 : 48,
+                      height: idx < 7 ? 60 : 48,
+                      borderRadius: '50%',
+                      background: 'rgba(96, 165, 250, 0.25)',
+                      zIndex: 0,
+                      animation: 'pulse-blue 1.5s infinite',
+                    }} />
+                  )}
+                  <Image
+                    src={logoMap[step.title] || 'default.png'}
+                    alt={step.title}
+                    width={
+                      step.title === 'EY-P'
+                        ? 48
+                        : idx < 7 ? 48 : 36
+                    }
+                    height={
+                      step.title === 'EY-P'
+                        ? 48
+                        : idx < 7 ? 48 : 36
+                    }
+                    style={{
+                      objectFit: 'contain',
+                      width:
+                        step.title === 'EY-P'
+                          ? 48
+                          : idx < 7 ? 48 : 36,
+                      height:
+                        step.title === 'EY-P'
+                          ? 48
+                          : idx < 7 ? 48 : 36,
+                      boxShadow:
+                        step.title === '365'
+                          ? 'none'
+                          : 'none',
+                      borderRadius: step.title === 'EY' ? 0 : 12,
+                      background: step.title === '365' ? 'transparent' : 'transparent',
+                      position: 'relative',
+                      zIndex: 1,
+                    }}
+                  />
+                </div>
+                <div className="timeline-position" style={{ marginTop: 8, lineHeight: 1.5, fontSize: 13, minHeight: 24 }}>
+                  {positionNode}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
       <style>{`
@@ -190,6 +266,11 @@ export default function Timeline() {
           font-size: 12px;
           color: #2563eb;
           font-weight: 500;
+        }
+        @keyframes pulse-blue {
+          0% { box-shadow: 0 0 0 0 rgba(96,165,250,0.25); }
+          70% { box-shadow: 0 0 0 16px rgba(96,165,250,0.05); }
+          100% { box-shadow: 0 0 0 0 rgba(96,165,250,0.25); }
         }
       `}</style>
     </div>
