@@ -30,6 +30,18 @@ export default function HomePage() {
     setIsModalOpen(true);
   };
 
+  // Check for form URL parameter on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const formType = params.get('form');
+    
+    if (formType && (formType === 'featured' || formType === 'member' || formType === 'event')) {
+      openModal(formType);
+      // Clean up URL without reloading the page
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 300);
@@ -163,7 +175,7 @@ export default function HomePage() {
 							<Award className="w-12 h-12 text-blue-500 mb-4 drop-shadow-md" />
 							<h3 className="text-2xl font-bold text-blue-900 mb-2">Get Featured</h3>
 							<p className="text-blue-800/80 mb-6 flex-grow">Share your story with our community and inspire others.</p>
-							<Button variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700 rounded-full transition-all duration-300" onClick={() => openModal('featured')}>
+							<Button variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700 rounded-full transition-all duration-300" onClick={() => openModal('member')}>
 								Apply Now
 							</Button>
 						</div>

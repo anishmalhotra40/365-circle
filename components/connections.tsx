@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ChevronDown, ChevronLeft, ChevronRight, Star, Linkedin } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Star, Linkedin, Search } from "lucide-react";
 import cn from "classnames";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
@@ -98,6 +98,7 @@ const Connections = () => {
   const [connections, setConnections] = useState<Connection[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     async function fetchConnections() {
@@ -150,16 +151,39 @@ const Connections = () => {
   
   const filterOptions = ["All", ...topIndustries, "Others"];
 
+  // Search filter logic - searches across all parameters
+  const searchFilteredConnections = connections.filter((conn) => {
+    if (!searchQuery.trim()) return true;
+    
+    const query = searchQuery.toLowerCase();
+    const searchableFields = [
+      conn.Name,
+      conn["Designation "],
+      conn["Organization Name"],
+      conn["Organization Type (Small/ Medium/ Large)"],
+      conn["Industry "],
+      conn["Sub Sector"],
+      conn["Type of connect (Founder/ Employee/ Freelancer)"],
+      conn["Designation Type (Senior/ Mid/ Entry Level)"],
+      conn["Email ID"],
+    ];
+    
+    return searchableFields.some(field => 
+      field?.toLowerCase().includes(query)
+    );
+  });
+
+  // Apply industry filter after search
   const filteredConnections =
     selectedIndustry === "All"
-      ? connections
+      ? searchFilteredConnections
       : selectedIndustry === "Others"
-      ? connections.filter((p) => {
+      ? searchFilteredConnections.filter((p) => {
           const industry = p["Industry "];
           // Show all connections that are NOT in the top 7 industries
           return !topIndustries.includes(industry || "");
         })
-      : connections.filter((p) => p["Industry "] === selectedIndustry);
+      : searchFilteredConnections.filter((p) => p["Industry "] === selectedIndustry);
 
   // Smart sorting function that prioritizes featured people and large companies
   const sortConnections = (connections: Connection[]) => {
@@ -232,7 +256,7 @@ const Connections = () => {
 
   useEffect(() => {
     setPage(1);
-  }, [selectedIndustry]);
+  }, [selectedIndustry, searchQuery]);
 
   if (loading) {
     return (
@@ -255,14 +279,27 @@ const Connections = () => {
       <section id="connections" className="pb-10 md:pb-16 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-8 md:mb-12">
-            <h2 className="inline-block text-4xl md:text-5xl font-bold tracking-tight text-blue-900 dark:text-blue-200 px-2 py-1">
+            <h2 className="inline-block text-4xl md:text-4xl font-bold tracking-tight text-blue-900 dark:text-blue-200 px-2 py-1">
               Connections Across Industry
             </h2>
             <p className="text-base md:text-lg text-blue-900 dark:text-blue-200 max-w-xl mx-auto font-normal opacity-80">
               Discover professionals from various fields.
             </p>
           </div>
-          <div className="flex justify-end mb-6 md:mb-8 relative">
+          <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 mb-6 md:mb-8">
+            {/* Search Bar */}
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by name, company, industry..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 text-base rounded-xl border border-blue-200 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#405ff4] focus:border-transparent shadow transition-all"
+              />
+            </div>
+
+            {/* Filter Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}

@@ -8,28 +8,28 @@ import { Users, Star, BookOpen, Briefcase, Users2 } from 'lucide-react';
 const metrics = [
   {
     title: 'Strong Member Community',
-    value: 650,
+    value: 2000,
     suffix: '+',
     icon: <Users className="w-6 h-6 text-blue-600 animate-float" />,
     gradient: 'from-blue-500 to-blue-600',
   },
   {
-    title: 'Featured Stories',
-    value: 250,
+    title: 'Featured Posts',
+    value: 1500,
     suffix: '+',
     icon: <Star className="w-6 h-6 text-yellow-400 animate-float" />,
     gradient: 'from-yellow-400 to-orange-500',
   },
   {
     title: 'Stories Captured of CXOs',
-    value: 50,
+    value: 90,
     suffix: '%',
     icon: <BookOpen className="w-6 h-6 text-purple-500 animate-float" />,
     gradient: 'from-purple-500 to-pink-500',
   },
   {
     title: 'Worth Business Opportunities Generated',
-    value: 3,
+    value: 10,
     suffix: 'cr+',
     prefix: '₹',
     icon: <Briefcase className="w-6 h-6 text-green-500 animate-float" />,
@@ -37,7 +37,7 @@ const metrics = [
   },
   {
     title: 'New Age Networking Events Conducted',
-    value: 5,
+    value: 10,
     suffix: '',
     icon: <Users2 className="w-6 h-6 text-blue-500 animate-float" />,
     gradient: 'from-blue-400 to-cyan-500',

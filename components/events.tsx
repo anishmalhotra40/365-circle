@@ -192,7 +192,7 @@ export default function Events({ onRegister }: { onRegister?: () => void }) {
 
   return (
     <section className="py-16">
-      <h2 className="text-4xl md:text-5xl font-extrabold text-blue-900 text-center mb-10">Events</h2>
+      <h2 className="text-4xl md:text-4xl font-extrabold text-blue-900 text-center mb-10">Events</h2>
       <LayoutGrid cards={cards} />
       <div className="flex justify-center mt-2">
         <button

@@ -1,95 +1,71 @@
 "use client";
 
 import React from "react";
-import { SpotlightCardWithReveal } from "./SpotlightCardWithReveal";
+import { Building2, UserRound, MoveRight, Lightbulb } from "lucide-react";
 import Image from "next/image";
+
+type Tile = {
+  id: string;
+  title: string;
+  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  imagePath: string;
+};
+
+const TILES: Tile[] = [
+  { id: "cxo", title: "CXO Featuring", Icon: UserRound, imagePath: "/serv1.jpg" },
+  { id: "company", title: "Company Profile Featuring", Icon: Building2, imagePath: "/serv2.jpg" },
+  { id: "industry", title: "Industry Movements", Icon: MoveRight, imagePath: "/serv3.jpg" },
+  { id: "thought", title: "Thought Leaderships", Icon: Lightbulb, imagePath: "/serv4.jpg" },
+];
 
 export const WhoWeServe = () => {
   return (
     <section className="w-full px-6 py-12 md:px-20 mt-4 bg-blue-50/50 text-blue-900">
-      <div className="text-center mb-12">
-        <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-blue-700 inline-block transition-colors duration-300 group relative group-hover:text-blue-300">
-          Who We Serve
-          <span className="block h-1 w-16 bg-blue-200 rounded-full mx-auto mt-3"></span>
+      <div className="text-center mb-8">
+        <h2 className="text-4xl md:text-4xl font-extrabold tracking-tight text-blue-700 inline-block transition-colors duration-300 group relative group-hover:text-blue-300">
+          Our Offerings
         </h2>
       </div>
-      <div className="grid gap-8 md:grid-cols-3">
-        {/* Left card: darker by default, lighter on hover */}
-        <SpotlightCardWithReveal
-          radius={300}
-          color="#60a5fa" // Tailwind blue-400
-          className="relative bg-black/80 hover:bg-blue-100/60 backdrop-blur-md rounded-xl p-6 md:p-8 border border-black hover:border-blue-200 hover:shadow-xl hover:shadow-blue-200/60 hover:scale-[1.04] transition-all transition-colors duration-500 ease-in-out group overflow-hidden"
-        >
-          {/* Card image as background */}
-          <Image
-            src="/feature1.png"
-            alt="CXOs, Founders & Business Leaders"
-            fill
-            className="absolute inset-0 w-full h-full object-cover scale-175 rounded-xl opacity-20 group-hover:opacity-80 transition-opacity duration-500 pointer-events-none select-none z-0"
-            priority
-          />
-          <div className="relative z-10 transition-all duration-500 group-hover:opacity-0 group-hover:pointer-events-none">
-            <h3 className="text-xl md:text-2xl font-bold text-blue-600 mb-4 transition-colors duration-500 ease-in-out">
-              For CXOs, Founders & Business Leaders
-            </h3>
-            <p className="text-sm md:text-base text-white leading-relaxed group-hover:text-blue-800">
-              We spotlight career journeys, innovations, and offerings that deserve to be seen.
-              From powerful pivots to breakthrough ideas, we help leaders articulate their vision,
-              amplify their presence, and unlock new opportunities—through partnerships, strategic collaborations, or community-led engagements.
-            </p>
-          </div>
-        </SpotlightCardWithReveal>
+      <h2 className="text-2xl md:text-2xl text-center font-extrabold tracking-tight text-black block mx-auto max-w-3xl transition-colors duration-300 group relative group-hover:text-blue-300">
+        Featured Post
+      </h2>
+      <section className="mx-auto max-w-6xl px-4 mt-4 py-2 pb-80">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {TILES.map(({ id, title, Icon, imagePath }) => (
+            <div key={id} className="relative group">
+              {/* Card */}
+              <div className="flex flex-col items-center justify-center rounded-2xl border border-blue-200 bg-white shadow-sm p-6 transition hover:shadow-md relative z-10">
+                <h3 className="text-center text-base font-semibold mb-2 text-blue-800">
+                  {title}
+                </h3>
+                <Icon className="h-10 w-10 text-blue-600" aria-hidden="true" />
+              </div>
 
-        {/* Middle and right cards: even lighter blue */}
-        <div className="flex flex-col gap-8 md:col-span-2">
-          <SpotlightCardWithReveal
-            radius={300}
-            color="#93c5fd" // Tailwind blue-300
-            className="relative bg-black/80 hover:bg-blue-100/60 backdrop-blur-md rounded-xl p-6 md:p-8 border border-black hover:border-blue-200 hover:shadow-xl hover:shadow-blue-200/60 hover:scale-[1.04] transition-all transition-colors duration-500 ease-in-out group overflow-hidden"
-          >
-            <Image
-              src="/feature2.png"
-              alt="Businesses"
-              fill
-              className="absolute inset-0 w-full h-full object-cover scale-175 rounded-xl opacity-15 group-hover:opacity-80 transition-opacity duration-500 pointer-events-none select-none z-0"
-              priority
-            />
-            <div className="relative z-10 transition-all duration-500 group-hover:opacity-0 group-hover:pointer-events-none">
-              <h3 className="text-xl md:text-2xl font-bold text-blue-600 mb-4 transition-colors duration-500 ease-in-out">
-                For Businesses
-              </h3>
-              <p className="text-sm md:text-base text-white leading-relaxed group-hover:text-blue-800">
-                We capture the essence of growing ventures—showcasing what makes them unique
-                and opening doors to collaborative projects, new engagements, and cross-industry partnerships within the Circle.
-              </p>
-            </div>
-          </SpotlightCardWithReveal>
+              {/* Downward Spotlight Effect - Always Visible */}
+              <div className="absolute top-full left-1/2 -translate-x-1/2 transition-all duration-500 ease-out">
+                {/* Blue Spotlight beam from card to image - 3x longer */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-5 opacity-50 h-24 bg-gradient-to-b from-blue-500/60 to-blue-400/80 group-hover:from-blue-600/80 group-hover:to-blue-500/90 transition-all duration-300" />
 
-          <SpotlightCardWithReveal
-            radius={300}
-            color="#93c5fd" // Tailwind blue-300
-            className="relative bg-black/80 hover:bg-blue-100/60 backdrop-blur-md rounded-xl p-6 md:p-8 border border-black hover:border-blue-200 hover:shadow-xl hover:shadow-blue-200/60 hover:scale-[1.04] transition-all transition-colors duration-500 ease-in-out group overflow-hidden"
-          >
-            <Image
-              src="/feature3.png"
-              alt="Aspirants & Emerging Leaders"
-              fill
-              className="absolute inset-0 w-full h-full object-cover scale-175 rounded-xl opacity-15 group-hover:opacity-80 transition-opacity duration-500 pointer-events-none select-none z-0"
-              priority
-            />
-            <div className="relative z-10 transition-all duration-500 group-hover:opacity-0 group-hover:pointer-events-none">
-              <h3 className="text-xl md:text-2xl font-bold text-blue-600 mb-4 transition-colors duration-500 ease-in-out">
-                For Aspirants & Emerging Leaders
-              </h3>
-              <p className="text-sm md:text-base text-white leading-relaxed group-hover:text-blue-800">
-                This is where ambition meets access. Discover stories that inspire bold thinking,
-                gain mentorship through authentic conversations, and contribute to a network built on shared growth.
-                <span className="italic"> The 365 Circle </span> offers a space to rise, engage, and lead.
-              </p>
+                {/* Image container with spotlight - connected to beam */}
+                <div className="relative w-64 h-56 rounded-xl overflow-hidden shadow-2xl border-2 border-blue-400 group-hover:border-blue-500 transition-all duration-300 mt-24">
+                  {/* Blue spotlight glow overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-blue-400/40 via-blue-300/20 to-transparent z-10 pointer-events-none group-hover:from-blue-500/50 transition-all duration-300" />
+                  
+                  {/* Radial spotlight effect */}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-blue-400/30 rounded-full blur-2xl z-10 pointer-events-none group-hover:bg-blue-500/40 group-hover:w-40 group-hover:h-40 transition-all duration-300" />
+                  
+                  <Image
+                    src={imagePath}
+                    alt={title}
+                    fill
+                    className="object-cover scale-100 group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              </div>
             </div>
-          </SpotlightCardWithReveal>
+          ))}
         </div>
-      </div>
+      </section>
     </section>
   );
 };

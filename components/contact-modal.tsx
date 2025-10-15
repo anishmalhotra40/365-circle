@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Link2, Check } from "lucide-react"
 
 interface ContactModalProps {
   isOpen: boolean
@@ -57,6 +58,7 @@ export default function ContactModal({
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [events, setEvents] = useState<Event[]>([])
   const [eventsLoading, setEventsLoading] = useState(false)
+  const [urlCopied, setUrlCopied] = useState(false)
 
   const supabase = createClient()
 
@@ -304,14 +306,50 @@ We will send you a confirmation email with more details.`)
     }))
   }
 
+  const handleCopyFormUrl = () => {
+    if (!type) return
+    
+    const baseUrl = window.location.origin
+    const formUrl = `${baseUrl}?form=${type}`
+    
+    navigator.clipboard.writeText(formUrl).then(() => {
+      setUrlCopied(true)
+      setTimeout(() => setUrlCopied(false), 2000)
+    }).catch((err) => {
+      console.error('Failed to copy URL:', err)
+    })
+  }
+
   const content = getModalContent()
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto bg-white border-blue-100 shadow-lg">
+      <DialogContent className="sm:max-w-[700px] max-h-[85vh] overflow-y-auto bg-white border-blue-100 shadow-lg">
         <DialogHeader>
           <DialogTitle className="text-blue-600 text-xl">{content.title}</DialogTitle>
           <DialogDescription className="text-blue-700">{content.description}</DialogDescription>
+          <div className="pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleCopyFormUrl}
+              className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2"
+              title="Copy form URL to share"
+            >
+              {urlCopied ? (
+                <>
+                  <Check className="w-4 h-4" />
+                  <span className="text-xs whitespace-nowrap">Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Link2 className="w-4 h-4" />
+                  <span className="text-xs whitespace-nowrap">Copy Form URL</span>
+                </>
+              )}
+            </Button>
+          </div>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">

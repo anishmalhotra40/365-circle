@@ -16,16 +16,16 @@ const timelineData = [
 
 // Add a mapping from title to logo file
 const logoMap: Record<string, string> = {
-  'D.P.S': 'dps.png',
-  'Symbiosis SOE': 'SSE.png',
-  'NTPC': 'ntpc.png',
-  'HDFC Bank': 'hdfc.png',
-  'Ken Research': 'ken.png',
-  'Nielsen': 'neilsen.png',
-  'Rakuten Insight': 'rakuten.svg',
-  'EY': 'ey.png', // revert to original
-  'EY-P': 'eyp.png', // revert to original
-  '365': 'logo.png',
+  'D.P.S': '/dps.png',
+  'Symbiosis SOE': '/SSE.png',
+  'NTPC': '/ntpc.png',
+  'HDFC Bank': '/hdfc.png',
+  'Ken Research': '/ken.png',
+  'Nielsen': '/neilsen.png',
+  'Rakuten Insight': '/rakuten.svg',
+  'EY': '/ey.png',
+  'EY-P': '/eyp.png',
+  '365': '/logo.png',
 };
 
 export default function Timeline() {
@@ -118,7 +118,7 @@ export default function Timeline() {
                     }} />
                   )}
                   <Image
-                    src={logoMap[step.title] || 'default.png'}
+                    src={logoMap[step.title] || '/logo.png'}
                     alt={step.title}
                     width={
                       step.title === 'EY-P'
