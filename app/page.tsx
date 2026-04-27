@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+// import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronDown, ArrowUp, Award, Users } from "lucide-react";
 import Navigation from "@/components/navigation";
 import ContactModal from "@/components/contact-modal";
 import Metrics from "@/components/metrics";
 import AboutUsSection from "@/components/about";
-import { WhoWeServe } from "@/components/whoweserve";
+import WhoWeServe from "@/components/whoweserve2";
 import Events from "@/components/events";
 import Newsletter from "@/components/newsletter";
 import FaqSection from "@/components/FAQ";
@@ -63,8 +63,8 @@ export default function HomePage() {
         <link rel="canonical" href="https://the365circle.com/" />
         <meta property="og:title" content="The 365 Circle | Strategic Networking & Storytelling for Leaders" />
         <meta property="og:description" content="A strategic networking and storytelling platform for CXOs, founders, business leaders, and changemakers. Discover inspiring journeys, exclusive events, and a thriving community built on purposeful connections." />
-        <meta property="og:image" content="/logo.png" />
-        <meta property="og:url" content="https://the365circle.com/" />
+        <meta property="og:image" content="/logobg.png" />
+        <meta property="og:url" content="https://the365circle.com/" />  
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="The 365 Circle | Strategic Networking & Storytelling for Leaders" />
@@ -83,14 +83,24 @@ export default function HomePage() {
         id="home"
         className="relative min-h-screen flex items-center justify-center overflow-hidden"
       >
-        <Image
+        {/* <Image
           alt="Hero background"
           src="/heroimage.jpeg"
           fill
           className="absolute inset-0 object-cover object-center z-0"
           priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/80 z-10"></div>
+        /> */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover brightness-105 contrast-105"
+        >
+        <source src="/herovideo2.mp4" type="video/mp4" />
+      </video>
+
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/60 z-10"></div>
 
         <div className="relative z-20 flex flex-col items-center justify-center w-full h-full px-4 sm:px-6 lg:px-8 py-20">
           <div className="flex justify-center mt-8 sm:mt-6">
@@ -119,7 +129,7 @@ export default function HomePage() {
               <p className="text-sm sm:text-base md:text-lg lg:text-lg text-white/90 leading-relaxed">
                 A community-driven initiative that brings together <span className="text-blue-400 font-extrabold">CXOs,
                 founders, business leaders, aspirants, and emerging
-                changemakers</span> — united by the power of storytelling and purposeful
+                changemakers</span> united by the power of storytelling and purposeful
                 networking to build a legacy of connection and influence.
               </p>
             </div>

@@ -5,8 +5,8 @@ import Timeline from "./timeline";
 
 const founderHighlights = [
   "On a mission to Network with 365 Inspiring Individuals in 365 Days",
-  "Featured 250+ Stories",
-  "100+ CXOs in our Network",
+  "Featured \n 250+ Stories",
+  "100+ CXOs \n in our Network",
   "5 New-age Networking Events Conducted",
 ];
 
@@ -39,7 +39,7 @@ export default function AboutUsSection() {
             <span className="font-semibold text-blue-700">
               365 visionary CXOs, founders, and business leaders
             </span>{" "}
-            —capturing their stories, sharing their offerings, and fostering
+            capturing their stories, sharing their offerings, and fostering
             meaningful opportunities within a thriving community of inspiration,
             insight, and connection.
           </p>
@@ -50,21 +50,6 @@ export default function AboutUsSection() {
 
         {/* Founder + Highlights Section */}
         <div className="flex-1 flex flex-col-reverse md:flex-row items-center justify-center gap-6">
-          {/* Highlights */}
-          <div className="flex flex-col items-center justify-center w-full md:w-[260px] min-h-[320px]">
-            <div className="bg-blue-50 p-4 rounded-md shadow-sm text-xs md:text-sm text-blue-800 flex items-center justify-center text-center w-full max-w-[220px] font-medium h-[100px] md:h-[120px] mb-2">
-              {founderHighlights[0]}
-            </div>
-            {founderHighlights.slice(1).map((point, i) => (
-              <div
-                key={i}
-                className="bg-blue-50 p-4 rounded-md shadow-sm text-xs md:text-sm text-blue-800 flex items-center justify-center text-center w-full max-w-[220px] font-medium h-[60px] md:h-[66px] mb-2 last:mb-0"
-              >
-                {point}
-              </div>
-            ))}
-          </div>
-
           {/* Founder Photo */}
           <div className="flex flex-col items-center w-full md:w-[260px] min-h-[320px] justify-center">
             <Image
@@ -82,7 +67,36 @@ export default function AboutUsSection() {
               FOUNDER
             </div>
           </div>
+          <div className="flex flex-col items-center w-full md:w-[260px] min-h-[320px] justify-center">
+            <Image
+              src="/shrey.png"
+              alt="Shrey Anand - Co Founder"
+              width={220}
+              height={220}
+              className="rounded-lg object-cover mb-2 mx-auto"
+              priority
+            />
+            <h4 className="text-lg md:text-xl font-bold text-blue-900 mb-1 text-center">
+              SHREY ANAND
+            </h4>
+            <div className="text-blue-600 font-semibold text-xs md:text-sm mb-2 text-center">
+              CO-FOUNDER
+            </div>
+          </div>
         </div>
+      </div>
+      {/* Highlights */}
+      <div className="max-w-6xl mx-auto px-4 py-10">
+        <div className="flex flex-row items-center justify-center w-full gap-6">
+            {founderHighlights.slice().map((point, i) => (
+              <div
+                key={i}
+                className="whitespace-pre-line bg-blue-50 p-4 rounded-md shadow-sm text-xs md:text-sm text-blue-800 flex items-center justify-center text-center w-full max-w-[220px] font-medium h-[100px] md:h-[120px] mb-2"
+              >
+                {point}
+              </div>
+            ))}
+          </div>
       </div>
 
       {/* Timeline Section */}

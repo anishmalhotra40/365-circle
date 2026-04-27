@@ -11,7 +11,7 @@ export default function Footer() {
 				
 				{/* Logo and Branding */}
 				<div className="flex items-center gap-3">
-					<Image src="/logo.png" alt="365 Circle Logo" width={42} height={42} className="rounded-lg" />
+					<Image src="/footerlogo.png" alt="365 Circle Logo" width={42} height={42} className="rounded-lg" />
 					<span className="text-blue-900 dark:text-blue-100 font-bold text-xl">The 365 Circle</span>
 				</div>
 
