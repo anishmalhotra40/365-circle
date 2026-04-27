@@ -3,13 +3,6 @@
 import Image from "next/image";
 import Timeline from "./timeline";
 
-const founderHighlights = [
-  "On a mission to Network with 365 Inspiring Individuals in 365 Days",
-  "Featured \n 250+ Stories",
-  "100+ CXOs \n in our Network",
-  "5 New-age Networking Events Conducted",
-];
-
 export default function AboutUsSection() {
   return (
     <section id="about" className="py-12 bg-white">
@@ -85,20 +78,6 @@ export default function AboutUsSection() {
           </div>
         </div>
       </div>
-      {/* Highlights */}
-      <div className="max-w-6xl mx-auto px-4 py-10">
-        <div className="flex flex-row items-center justify-center w-full gap-6">
-            {founderHighlights.slice().map((point, i) => (
-              <div
-                key={i}
-                className="whitespace-pre-line bg-blue-50 p-4 rounded-md shadow-sm text-xs md:text-sm text-blue-800 flex items-center justify-center text-center w-full max-w-[220px] font-medium h-[100px] md:h-[120px] mb-2"
-              >
-                {point}
-              </div>
-            ))}
-          </div>
-      </div>
-
       {/* Timeline Section */}
       <Timeline />
     </section>

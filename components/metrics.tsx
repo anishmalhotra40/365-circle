@@ -29,7 +29,7 @@ const metrics = [
   },
   {
     title: 'Worth Business Opportunities Generated',
-    value: 10,
+    value: 40,
     suffix: 'cr+',
     prefix: '₹',
     icon: <Briefcase className="w-6 h-6 text-green-500 animate-float" />,
@@ -37,8 +37,8 @@ const metrics = [
   },
   {
     title: 'New Age Networking Events Conducted',
-    value: 10,
-    suffix: '',
+    value: 20,
+    suffix: '+',
     icon: <Users2 className="w-6 h-6 text-blue-500 animate-float" />,
     gradient: 'from-blue-400 to-cyan-500',
   },
