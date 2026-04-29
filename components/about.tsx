@@ -32,7 +32,7 @@ export default function AboutUsSection() {
             To spotlight and celebrate the journeys of <span className="font-semibold text-blue-700">visionary CXOs, founders, business leaders, and emerging changemakers.</span> Capturing their stories, championing their vision, and cultivating meaningful opportunities within a thriving community of inspiration, insight, and connection.
           </p>
           <blockquote className="text-blue-900 italic text-base md:text-lg font-medium text-center md:text-left bg-blue-50/80 rounded-lg px-4 py-4">
-            “We believe every story holds the power to spark an idea, open a door, and change the course of someone's life.”
+            &quot;We believe every story holds the power to spark an idea, open a door, and change the course of someone&apos;s life.&quot;
           </blockquote>
         </div>
 

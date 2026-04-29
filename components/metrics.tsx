@@ -3,7 +3,7 @@
 import React from 'react';
 import CountUp from 'react-countup';
 import { useInView } from 'react-intersection-observer';
-import { Users, Star, BookOpen, Briefcase, Users2 } from 'lucide-react';
+import { Users, Star, Briefcase, Users2 } from 'lucide-react';
 
 const metrics = [
   {
