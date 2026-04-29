@@ -11,10 +11,10 @@ interface Tile {
 }
 
 const TILES: Tile[] = [
-  { id: 'leadership', title: 'Leadership \n Spotlight',        Icon: UserRound, imagePath: '/servls.jpg' },
-  { id: 'startup',    title: 'Startup \n Spotlight',           Icon: Building2, imagePath: '/servsu.jpg' },
-  { id: 'linkedin',   title: 'LinkedIn \n Account Management', Icon: Linkedin,  imagePath: '/servlm.jpg' },
-  { id: 'thought',    title: 'Thought \n Leadership',         Icon: Lightbulb, imagePath: '/servtl.jpg' },
+  { id: 'leadership', title: 'Leadership \n Spotlight', Icon: UserRound, imagePath: '/servls.jpg' },
+  { id: 'startup', title: 'Startup \n Spotlight', Icon: Building2, imagePath: '/servsu.jpg' },
+  { id: 'linkedin', title: 'LinkedIn Account Management', Icon: Linkedin, imagePath: '/servlm.jpg' },
+  { id: 'thought', title: 'Thought \n Leadership', Icon: Lightbulb, imagePath: '/servtl.jpg' },
 ];
 
 const GAP = 24;

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Timeline from "./timeline";
+import Timeline2 from "./timeline2";
 
 export default function AboutUsSection() {
   return (
@@ -80,6 +81,7 @@ export default function AboutUsSection() {
       </div>
       {/* Timeline Section */}
       <Timeline />
+      <Timeline2 />
     </section>
   );
 }

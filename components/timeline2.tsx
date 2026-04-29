@@ -2,11 +2,9 @@ import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 
 const timelineData = [
-  { id: 1, date: "2018 – 2019", title: "Ken Research", position: "Research Associate" },
-  { id: 2, date: "2019 – 2021", title: "Nielsen", position: "Project Co-ordinator" },
-  { id: 3, date: "2021 – 2023", title: "EY", position: "Associate Consultant -> Consultant" },
-  { id: 4, date: "2023 – 2024", title: "EY-P", position: "Consultant" },
-  { id: 5, date: "2024 – 2025", title: "EY-P", position: "Sr. Consultant" },
+  { id: 1, date: "2018 – 2019", title: "Ken Research", position: "Assistant Sales Manager" },
+  { id: 2, date: "2019 – 2020", title: "Nielsen", position: "Marketing Associate" },
+  { id: 3, date: "2021 – 2025", title: "EY", position: "Business Development Specialist" },
   { id: 6, date: "2025 – Present", title: "365", position: "Co-Founder" },
 ];
 
@@ -24,7 +22,7 @@ const logoMap: Record<string, string> = {
   '365': '/logo.png',
 };
 
-export default function Timeline() {
+export default function Timeline2() {
   const timelineRef = useRef<HTMLDivElement>(null);
   const [animateLine, setAnimateLine] = useState(false);
 
@@ -50,7 +48,7 @@ export default function Timeline() {
       className="timeline-root"
       style={{ width: "100%", maxWidth: 1200, margin: "64px auto 0 auto", padding: 20 }}
     >
-      <h2 className="pb-8 font-bold text-2xl">Anish Malhotra – Co-Founder, The 365 Circle</h2>
+      <h2 className="pb-8 font-bold text-2xl">Shrey Anand – Co-Founder, The 365 Circle</h2>
       <div className="timeline-content">
         {/* DATES above dots */}
         <div className="timeline-row timeline-dates">
