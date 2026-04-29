@@ -2,24 +2,20 @@ import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 
 const timelineData = [
-  { id: 1, date: "2018 – 2019", title: "Ken Research", position: "Assistant Sales Manager" },
-  { id: 2, date: "2019 – 2020", title: "Nielsen", position: "Marketing Associate" },
-  { id: 3, date: "2021 – 2025", title: "EY", position: "Business Development Specialist" },
+  { id: 1, date: "2018 – 2019", title: "EazyDiner", position: "Assistant Sales Manager" },
+  { id: 2, date: "2019 – 2020", title: "Smytten", position: "Marketing Associate" },
+  { id: 3, date: "2020 - 2021", title: "Trinity College Dublin", position: "Master's in Marketing" },
+  { id: 4, date: "2021 – 2025", title: "YOUniversal Next", position: "Business Development Specialist" },
   { id: 6, date: "2025 – Present", title: "365", position: "Co-Founder" },
 ];
 
 // Add a mapping from title to logo file
 const logoMap: Record<string, string> = {
-  'D.P.S': '/dps.png',
-  'Symbiosis SOE': '/SSE.png',
-  'NTPC': '/ntpc.png',
-  'HDFC Bank': '/hdfc.png',
-  'Ken Research': '/ken.png',
-  'Nielsen': '/neilsen.png',
-  'Rakuten Insight': '/rakuten.svg',
-  'EY': '/ey.png',
-  'EY-P': '/eyp.png',
-  '365': '/logo.png',
+  'EazyDiner': '/eazydiner.png',
+  'Smytten': '/smytten.png',
+  'Trinity College Dublin':'/tcd.png',
+  'YOUniversal Next': '/uninxt.png',
+  '365': '/footerlogo.png',
 };
 
 export default function Timeline2() {

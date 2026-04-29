@@ -21,7 +21,7 @@ const logoMap: Record<string, string> = {
   'Rakuten Insight': '/rakuten.svg',
   'EY': '/ey.png',
   'EY-P': '/eyp.png',
-  '365': '/logo.png',
+  '365': '/footerlogo.png',
 };
 
 export default function Timeline() {
