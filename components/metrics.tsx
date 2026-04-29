@@ -20,13 +20,13 @@ const metrics = [
     icon: <Star className="w-6 h-6 text-yellow-400 animate-float" />,
     gradient: 'from-yellow-400 to-orange-500',
   },
-  {
-    title: 'Stories Captured of CXOs',
-    value: 90,
-    suffix: '%',
-    icon: <BookOpen className="w-6 h-6 text-purple-500 animate-float" />,
-    gradient: 'from-purple-500 to-pink-500',
-  },
+  // {
+  //   title: 'Stories Captured of CXOs',
+  //   value: 90,
+  //   suffix: '%',
+  //   icon: <BookOpen className="w-6 h-6 text-purple-500 animate-float" />,
+  //   gradient: 'from-purple-500 to-pink-500',
+  // },
   {
     title: 'Worth Business Opportunities Generated',
     value: 40,
@@ -53,7 +53,7 @@ const Metrics = () => {
   return (
     <section ref={ref} className="w-full py-10 sm:py-12 bg-white dark:bg-blue-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6">
           {metrics.map((metric, index) => (
             <div
               key={index}

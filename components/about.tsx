@@ -15,7 +15,7 @@ export default function AboutUsSection() {
               Our Mission
             </h2>
             <h3 className="text-2xl font-extrabold text-blue-900 leading-tight mb-3">
-              Connecting People, One Story at a Time
+              Connecting Leaders, One Story at a Time.
             </h3>
           </div>
 
@@ -24,21 +24,15 @@ export default function AboutUsSection() {
               Our Mission
             </h2>
             <h3 className="text-2xl md:text-4xl font-extrabold text-blue-900 leading-tight mb-4">
-              Connecting People, One Story at a Time
+              Connecting Leaders, One Story at a Time.
             </h3>
           </div>
 
           <p className="text-base md:text-lg text-blue-800/90 leading-relaxed mb-6 text-center md:text-left">
-            To spotlight and celebrate the journeys of{" "}
-            <span className="font-semibold text-blue-700">
-              365 visionary CXOs, founders, and business leaders
-            </span>{" "}
-            capturing their stories, sharing their offerings, and fostering
-            meaningful opportunities within a thriving community of inspiration,
-            insight, and connection.
+            To spotlight and celebrate the journeys of <span className="font-semibold text-blue-700">visionary CXOs, founders, business leaders, and emerging changemakers.</span> Capturing their stories, championing their vision, and cultivating meaningful opportunities within a thriving community of inspiration, insight, and connection.
           </p>
           <blockquote className="text-blue-900 italic text-base md:text-lg font-medium text-center md:text-left bg-blue-50/80 rounded-lg px-4 py-4">
-            “We believe every person has a story worth sharing. A story that can spark an idea, offer a new perspective, or change a life.”
+            “We believe every story holds the power to spark an idea, open a door, and change the course of someone's life.”
           </blockquote>
         </div>
 

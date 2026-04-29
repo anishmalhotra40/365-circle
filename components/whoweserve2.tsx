@@ -26,11 +26,8 @@ export default function ContentCards() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[#155DFC] mb-1.5">
-            Our Offerings
-          </p>
           <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">
-            Featured Post
+            Our Offerings
           </h2>
         </div>
       </div>

@@ -119,18 +119,15 @@ export default function HomePage() {
               <span className="font-bold whitespace-nowrap">TransCurators</span>
             </a>
           </div>
-
+          <br />
           <div className="w-full max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto text-center mt-6 sm:mt-0">
             <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-extrabold text-white tracking-tighter mb-5 sm:mb-6 leading-tight px-2">
-              Impactful Stories. Infinite Connections. One Strategic Network.
+              Stories That Open Doors. Networks That Build Them.
             </h1>
 
             <div className="backdrop-blur-md bg-white/5 rounded-xl sm:rounded-2xl shadow-lg px-5 py-4 sm:px-6 sm:py-4 md:px-8 md:py-6 mx-auto mb-6 sm:mb-8 max-w-full">
               <p className="text-sm sm:text-base md:text-lg lg:text-lg text-white/90 leading-relaxed">
-                A community-driven initiative that brings together <span className="text-blue-400 font-extrabold">CXOs,
-                founders, business leaders, aspirants, and emerging
-                changemakers</span> united by the power of storytelling and purposeful
-                networking to build a legacy of connection and influence.
+                Built for CXOs, founders, and decision-makers <span className="text-blue-400 font-extrabold">who value the right connections over more connections.</span> We combine storytelling with curation to unlock conversations that matter and opportunities that compound.
               </p>
             </div>
 
