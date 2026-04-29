@@ -112,7 +112,7 @@ export default function Timeline2() {
                       animation: 'pulse-blue 1.5s infinite',
                     }} />
                   )}
-                  <Image
+                  {/* <Image
                     src={logoMap[step.title] || '/logo.png'}
                     alt={step.title}
                     width={
@@ -141,6 +141,20 @@ export default function Timeline2() {
                           : 'none',
                       borderRadius: step.title === 'EY' ? 0 : 12,
                       background: step.title === '365' ? 'transparent' : 'transparent',
+                      position: 'relative',
+                      zIndex: 1,
+                    }}
+                  /> */}
+                  <Image
+                    src={logoMap[step.title] || '/logo.png'}
+                    alt={step.title}
+                    width={70}
+                    height={70}
+                    style={{
+                      objectFit: 'contain',
+                      width: 70,
+                      height: 70,
+                      background: 'transparent',
                       position: 'relative',
                       zIndex: 1,
                     }}

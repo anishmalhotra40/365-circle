@@ -2,11 +2,11 @@ import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 
 const timelineData = [
-  { id: 1, date: "2018 – 2019", title: "Ken Research", position: "Research Associate" },
-  { id: 2, date: "2019 – 2021", title: "Nielsen", position: "Project Co-ordinator" },
-  { id: 3, date: "2021 – 2023", title: "EY", position: "Associate Consultant -> Consultant" },
-  { id: 4, date: "2023 – 2024", title: "EY-P", position: "Consultant" },
-  { id: 5, date: "2024 – 2025", title: "EY-P", position: "Sr. Consultant" },
+  { id: 1, date: "2017", title: "HDFC Bank", position: "Management Trainee" },
+  { id: 2, date: "2018 – 2019", title: "Ken Research", position: "Research Associate" },
+  { id: 3, date: "2019 – 2021", title: "Nielsen", position: "Project Co-ordinator" },
+  { id: 4, date: "2021", title: "Rakuten Insight", position: "Associate Project Manager" },
+  { id: 5, date: "2021 – 2025", title: "EY-P", position: "Senior Consultant" },
   { id: 6, date: "2025 – Present", title: "365", position: "Co-Founder" },
 ];
 
@@ -114,7 +114,7 @@ export default function Timeline() {
                       animation: 'pulse-blue 1.5s infinite',
                     }} />
                   )}
-                  <Image
+                  {/* <Image
                     src={logoMap[step.title] || '/logo.png'}
                     alt={step.title}
                     width={
@@ -143,6 +143,21 @@ export default function Timeline() {
                           : 'none',
                       borderRadius: step.title === 'EY' ? 0 : 12,
                       background: step.title === '365' ? 'transparent' : 'transparent',
+                      position: 'relative',
+                      zIndex: 1,
+                    }}
+                  /> */}
+                  <Image
+                    src={logoMap[step.title] || '/logo.png'}
+                    alt={step.title}
+                    width={70}
+                    height={70}
+                    style={{
+                      objectFit: 'contain',
+                      width: 70,
+                      height: 70,
+                      borderRadius: 10,
+                      background: 'transparent',
                       position: 'relative',
                       zIndex: 1,
                     }}
