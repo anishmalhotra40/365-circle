@@ -7,7 +7,7 @@ const timelineData = [
   { id: 3, date: "2019 – 2021", title: "Nielsen", position: "Project Co-ordinator" },
   { id: 4, date: "2021", title: "Rakuten Insight", position: "Associate Project Manager" },
   { id: 5, date: "2021 – 2025", title: "EY-P", position: "Senior Consultant" },
-  { id: 6, date: "2025 – Present", title: "365", position: "Co-Founder" },
+  { id: 6, date: "2025 – Present", title: "365", position: "Founder" },
 ];
 
 // Add a mapping from title to logo file
@@ -50,7 +50,7 @@ export default function Timeline() {
       className="timeline-root"
       style={{ width: "100%", maxWidth: 1200, margin: "64px auto 0 auto", padding: 20 }}
     >
-      <h2 className="pb-8 font-bold text-2xl">Anish Malhotra – Co-Founder, The 365 Circle</h2>
+      <h2 className="pb-8 font-bold text-2xl">Anish Malhotra – Founder, The 365 Circle</h2>
       <div className="timeline-content">
         {/* DATES above dots */}
         <div className="timeline-row timeline-dates">
