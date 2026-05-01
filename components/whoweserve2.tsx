@@ -68,7 +68,7 @@ export default function ContentCards() {
   return (
     <div className="py-10 font-sans max-w-8xl mx-auto md:px-40 px-4">
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-3xl font-extrabold text-blue-900 leading-tight">
+        <h2 className="text-3xl font-extrabold text-blue-900 leading-tight ml-8 md:ml-0">
           Our Offerings
         </h2>
       </div>
@@ -82,7 +82,7 @@ export default function ContentCards() {
       </div>
       {/* mobile view */}
       <div
-        className="md:hidden"
+        className="md:hidden max-w-[300px] mx-auto"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
