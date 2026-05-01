@@ -42,11 +42,9 @@ function ProfileCard({ name, designation, organization_name, industry, linkedin_
   return (
     <div id="365-connections" className="group relative overflow-hidden rounded-3xl bg-white p-6 shadow-md transition-all duration-150 border border-blue-100/30 cursor-pointer
       hover:shadow-lg hover:-translate-y-1 hover:scale-[1.025]">
-      {/* Featured Tag */}
       {featured && (
         <span className="absolute top-4 left-4 z-10 rounded-full bg-yellow-400/90 px-3 py-1 text-xs font-bold text-white shadow">Featured</span>
       )}
-      {/* Profile Photo */}
       <div className="mb-4 flex justify-center">
         <div className="h-20 w-20 overflow-hidden rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center group-hover:scale-105 transition-transform duration-150">
           {photo_url && !imageError ? (
@@ -67,14 +65,12 @@ function ProfileCard({ name, designation, organization_name, industry, linkedin_
           )}
         </div>
       </div>
-      {/* Profile Info */}
       <div className="text-center">
         <h3 className="text-lg font-semibold text-gray-900 truncate group-hover:text-blue-700 transition-colors duration-150" title={name}>{name}</h3>
         <p className="mt-1 text-sm text-blue-700 font-medium truncate" title={designation}>{designation}</p>
         <p className="mt-1 text-xs text-gray-500 truncate" title={organization_name}>{organization_name}</p>
         <p className="mt-1 text-xs text-blue-500 font-semibold truncate" title={industry}>{industry}</p>
       </div>
-      {/* Contact & Featured Post Icons */}
       <div className="mt-5 flex justify-center gap-3">
         {post_url && (
           <a href={post_url.startsWith('http') ? post_url : `https://${post_url}`} target="_blank" rel="noopener noreferrer" className="rounded-full p-2 bg-yellow-50 hover:bg-yellow-100 text-yellow-600 transition" title="Featured Post">
@@ -113,25 +109,14 @@ const Connections = () => {
         setConnections([]);
       } else {
         setConnections(data || []);
-        // Debug: Log some sample data to understand the structure
-        if (data && data.length > 0) {
-          console.log('Sample connections data:', data.slice(0, 3).map(c => ({ 
-            name: c.Name, 
-            industry: c["Industry "],
-            hasIndustry: !!c["Industry "],
-            industryLength: c["Industry "]?.length
-          })));
-        }
       }
       setLoading(false);
     }
     fetchConnections();
   }, []);
 
-  // Industry filter logic (case-sensitive, fallback to "Others")
   const industryCounts = connections.reduce((acc: Record<string, number>, curr) => {
     const industry = curr["Industry "];
-    // Check for empty, null, or invalid industry values
     if (!industry || industry === "-" || industry === "Other" || industry === "Others" || industry.trim() === "" || industry === "N/A" || industry === "NA") {
       acc["Others"] = (acc["Others"] || 0) + 1;
     } else {
@@ -144,17 +129,14 @@ const Connections = () => {
     .sort((a, b) => b[1] - a[1])
     .map(([ind]) => ind);
   
-  // Get top 7 industries plus "Others" for a total of 8 filters
   const topIndustries = sortedIndustries
     .filter(i => i !== "Others")
     .slice(0, 7);
   
   const filterOptions = ["All", ...topIndustries, "Others"];
 
-  // Search filter logic - searches across all parameters
   const searchFilteredConnections = connections.filter((conn) => {
     if (!searchQuery.trim()) return true;
-    
     const query = searchQuery.toLowerCase();
     const searchableFields = [
       conn.Name,
@@ -167,86 +149,63 @@ const Connections = () => {
       conn["Designation Type (Senior/ Mid/ Entry Level)"],
       conn["Email ID"],
     ];
-    
-    return searchableFields.some(field => 
-      field?.toLowerCase().includes(query)
-    );
+    return searchableFields.some(field => field?.toLowerCase().includes(query));
   });
 
-  // Apply industry filter after search
   const filteredConnections =
     selectedIndustry === "All"
       ? searchFilteredConnections
       : selectedIndustry === "Others"
       ? searchFilteredConnections.filter((p) => {
           const industry = p["Industry "];
-          // Show all connections that are NOT in the top 7 industries
           return !topIndustries.includes(industry || "");
         })
       : searchFilteredConnections.filter((p) => p["Industry "] === selectedIndustry);
 
-  // Smart sorting function that prioritizes featured people and large companies
   const sortConnections = (connections: Connection[]) => {
-    return connections.sort((a, b) => {
-      // Priority 1: Featured status (featured people first)
-      const aFeatured = a["Featured "] && (a["Featured "].toLowerCase() === "yes" || a["Featured "].toLowerCase() === "true");
-      const bFeatured = b["Featured "] && (b["Featured "].toLowerCase() === "yes" || b["Featured "].toLowerCase() === "true");
-      
+
+    //add the ids of the people to show in the front of the list
+    const pinnedIds = [262,264,263,217,270,];
+
+    return [...connections].sort((a, b) => {
+      const aPin = pinnedIds.indexOf(a.id);
+      const bPin = pinnedIds.indexOf(b.id);
+
+      if (aPin !== -1 && bPin !== -1) return aPin - bPin;
+      if (aPin !== -1) return -1;
+      if (bPin !== -1) return 1;
+
+      const aFeatured = a["Featured "]?.toLowerCase() === "yes" || a["Featured "]?.toLowerCase() === "true";
+      const bFeatured = b["Featured "]?.toLowerCase() === "yes" || b["Featured "]?.toLowerCase() === "true";
       if (aFeatured && !bFeatured) return -1;
       if (!aFeatured && bFeatured) return 1;
-      
-      // Priority 2: Company size (Large companies first)
-      const aCompanySize = a["Organization Type (Small/ Medium/ Large)"];
-      const bCompanySize = b["Organization Type (Small/ Medium/ Large)"];
-      
-      const sizeOrder = { "Large": 3, "Medium": 2, "Small": 1 };
-      const aSizeScore = sizeOrder[aCompanySize as keyof typeof sizeOrder] || 0;
-      const bSizeScore = sizeOrder[bCompanySize as keyof typeof sizeOrder] || 0;
-      
-      if (aSizeScore !== bSizeScore) {
-        return bSizeScore - aSizeScore; // Large companies first
-      }
-      
-      // Priority 3: Position type (Founders first, then Employees, then Freelancers)
-      const aPositionType = a["Type of connect (Founder/ Employee/ Freelancer)"];
-      const bPositionType = b["Type of connect (Founder/ Employee/ Freelancer)"];
-      
-      const positionOrder = { "Founder": 3, "Employee": 2, "Freelancer": 1 };
-      const aPositionScore = positionOrder[aPositionType as keyof typeof positionOrder] || 0;
-      const bPositionScore = positionOrder[bPositionType as keyof typeof positionOrder] || 0;
-      
-      if (aPositionScore !== bPositionScore) {
-        return bPositionScore - aPositionScore; // Founders first
-      }
-      
-      // Priority 4: Photo URL (people with photos first)
-      const aHasPhoto = !!a["Photo URL"] && a["Photo URL"].trim() !== "";
-      const bHasPhoto = !!b["Photo URL"] && b["Photo URL"].trim() !== "";
-      
+
+      const sizeOrder = { Large: 3, Medium: 2, Small: 1 };
+      const aSizeScore = sizeOrder[a["Organization Type (Small/ Medium/ Large)"] as keyof typeof sizeOrder] ?? 0;
+      const bSizeScore = sizeOrder[b["Organization Type (Small/ Medium/ Large)"] as keyof typeof sizeOrder] ?? 0;
+      if (aSizeScore !== bSizeScore) return bSizeScore - aSizeScore;
+
+      const positionOrder = { Founder: 3, Employee: 2, Freelancer: 1 };
+      const aPosScore = positionOrder[a["Type of connect (Founder/ Employee/ Freelancer)"] as keyof typeof positionOrder] ?? 0;
+      const bPosScore = positionOrder[b["Type of connect (Founder/ Employee/ Freelancer)"] as keyof typeof positionOrder] ?? 0;
+      if (aPosScore !== bPosScore) return bPosScore - aPosScore;
+
+      const aHasPhoto = !!a["Photo URL"]?.trim();
+      const bHasPhoto = !!b["Photo URL"]?.trim();
       if (aHasPhoto && !bHasPhoto) return -1;
       if (!aHasPhoto && bHasPhoto) return 1;
-      
-      // Priority 5: Designation level (Senior positions first)
-      const designationOrder = { "Senior": 3, "Mid": 2, "Entry Level": 1 };
-      const aDesignation = a["Designation Type (Senior/ Mid/ Entry Level)"];
-      const bDesignation = b["Designation Type (Senior/ Mid/ Entry Level)"];
-      
-      const aDesignationScore = designationOrder[aDesignation as keyof typeof designationOrder] || 0;
-      const bDesignationScore = designationOrder[bDesignation as keyof typeof designationOrder] || 0;
-      
-      if (aDesignationScore !== bDesignationScore) {
-        return bDesignationScore - aDesignationScore; // Senior positions first
-      }
-      
-      // Priority 6: Alphabetical by name (as final tiebreaker)
-      return (a.Name || "").localeCompare(b.Name || "");
+
+      const designationOrder = { Senior: 3, Mid: 2, "Entry Level": 1 };
+      const aDesScore = designationOrder[a["Designation Type (Senior/ Mid/ Entry Level)"] as keyof typeof designationOrder] ?? 0;
+      const bDesScore = designationOrder[b["Designation Type (Senior/ Mid/ Entry Level)"] as keyof typeof designationOrder] ?? 0;
+      if (aDesScore !== bDesScore) return bDesScore - aDesScore;
+
+      return (a.Name ?? "").localeCompare(b.Name ?? "");
     });
   };
 
-  // Apply smart sorting to filtered connections
   const sortedFilteredConnections = sortConnections(filteredConnections);
 
-  // 2 rows x 3 columns = 6 cards per page
   const CARDS_PER_PAGE = 6;
   const totalPages = Math.ceil(sortedFilteredConnections.length / CARDS_PER_PAGE);
   const paginatedConnections = sortedFilteredConnections.slice(
@@ -287,7 +246,6 @@ const Connections = () => {
             </p>
           </div>
           <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 mb-6 md:mb-8">
-            {/* Search Bar */}
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
@@ -298,8 +256,6 @@ const Connections = () => {
                 className="w-full pl-10 pr-4 py-2 text-base rounded-xl border border-blue-200 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#405ff4] focus:border-transparent shadow transition-all"
               />
             </div>
-
-            {/* Filter Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -349,7 +305,6 @@ const Connections = () => {
               />
             ))}
           </div>
-          {/* Pagination controls if needed */}
           {totalPages > 1 && (
             <div className="flex justify-center mt-10 gap-4">
               <button
