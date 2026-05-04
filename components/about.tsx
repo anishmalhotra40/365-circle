@@ -55,16 +55,19 @@ export default function AboutUsSection() {
           </div>
         </div>
         <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-          <div className="w-full md:flex-1">
+          {/* Timeline */}
+          <div className="w-full md:flex-1 order-2 md:order-1">
             <Timeline2 />
           </div>
-          <div className="flex flex-col items-center w-full md:w-[260px] min-h-[320px] justify-center">
+
+          {/* Image */}
+          <div className="flex flex-col items-center w-full md:w-[260px] min-h-[320px] justify-center order-1 md:order-2">
             <Image
               src="/shrey.png"
               alt="Shrey Anand - Co Founder"
               width={220}
               height={220}
-              className="rounded-lg object-cover mt-12"
+              className="rounded-lg object-cover mt-6 md:mt-12"
               priority
             />
           </div>

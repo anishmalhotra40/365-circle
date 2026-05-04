@@ -115,23 +115,23 @@ export default function HomePage() {
               }}
             >
               <span className="w-3 h-3 sm:w-3 sm:h-3 rounded-full bg-blue-500 mr-2 sm:mr-2 animate-pulse"></span>
-              <span className="whitespace-nowrap">Powered by</span>
-              <span className="font-bold whitespace-nowrap">TransCurators</span>
+              <h3 className="whitespace-nowrap">Powered by<span className="font-bold whitespace-nowrap">TransCurators</span></h3>
+              
             </a>
           </div>
           <br />
           <div className="w-full max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto text-center mt-6 sm:mt-0">
-            <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-extrabold text-white tracking-tighter mb-5 sm:mb-6 leading-tight px-2">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-extrabold text-white tracking-tighter mb-5 sm:mb-6 leading-tight px-2">
               Stories That Open Doors. Networks That Build Them.
             </h1>
 
             <div className="backdrop-blur-md bg-white/5 rounded-xl sm:rounded-2xl shadow-lg px-5 py-4 sm:px-6 sm:py-4 md:px-8 md:py-6 mx-auto mb-6 sm:mb-8 max-w-full">
-              <p className="text-sm sm:text-base md:text-lg lg:text-lg text-white/90 leading-relaxed">
+              <p className="text-md sm:text-md md:text-lg lg:text-lg text-white/90 leading-relaxed">
                 Built for CXOs, founders, and decision-makers <span className="text-blue-400 font-extrabold">who value the right connections over more connections.</span> We combine storytelling with curation to unlock conversations that matter and opportunities that compound.
               </p>
             </div>
 
-            <div className="flex flex-col items-center justify-center gap-4 w-full">
+            <div className="flex flex-col items-center justify-center gap-4 w-full mt-16 md:mt-0">
               <Button
                 size="lg"
                 className="group bg-blue-600 text-white hover:bg-blue-700 rounded-full px-6 sm:px-8 py-4 text-sm sm:text-base md:text-lg w-full sm:w-auto max-w-full sm:max-w-md md:max-w-lg transition-all duration-300"
