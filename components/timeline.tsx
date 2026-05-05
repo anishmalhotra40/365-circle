@@ -114,7 +114,7 @@ export default function Timeline() {
                     )}
                     <Image
                       src={logoMap[step.title] || "/logo.png"}
-                      alt={step.title}
+                      alt={`${step.title} company logo`}
                       width={70}
                       height={70}
                       style={{ objectFit: "contain", width: 70, height: 70, borderRadius: 10, position: "relative", zIndex: 1 }}
@@ -160,7 +160,7 @@ export default function Timeline() {
                     {is365 && <span className="mobile-pulse-ring" />}
                     <Image
                       src={logoMap[step.title] || "/logo.png"}
-                      alt={step.title}
+                      alt={`${step.title} company logo`}
                       width={44}
                       height={44}
                       style={{ objectFit: "contain", width: 44, height: 44, borderRadius: 8, position: "relative", zIndex: 1 }}
