@@ -58,18 +58,25 @@ export default function HomePage() {
   return (
     <div className="bg-white text-blue-900 font-sans min-h-screen overflow-x-hidden">
       <Head>
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png" />
+
         <title>The 365 Circle | Strategic Networking & Storytelling for Leaders</title>
         <meta name="description" content="The 365 Circle is a strategic networking and storytelling platform for CXOs, founders, business leaders, and changemakers. Discover inspiring journeys, exclusive events, and a thriving community built on purposeful connections." />
         <link rel="canonical" href="https://the365circle.com/" />
         <meta property="og:title" content="The 365 Circle | Strategic Networking & Storytelling for Leaders" />
         <meta property="og:description" content="A strategic networking and storytelling platform for CXOs, founders, business leaders, and changemakers. Discover inspiring journeys, exclusive events, and a thriving community built on purposeful connections." />
-        <meta property="og:image" content="/logobg.png" />
+        <meta property="og:image" content="https://the365circle.com/logobg.png" />
         <meta property="og:url" content="https://the365circle.com/" />  
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="The 365 Circle | Strategic Networking & Storytelling for Leaders" />
         <meta name="twitter:description" content="A strategic networking and storytelling platform for CXOs, founders, business leaders, and changemakers. Discover inspiring journeys, exclusive events, and a thriving community built on purposeful connections." />
-        <meta name="twitter:image" content="/logo.png" />
+        <meta name="twitter:image" content="https://the365circle.com/logobg.png" />
       </Head>
       <Navigation />
       <ContactModal
