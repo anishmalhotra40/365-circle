@@ -9,6 +9,15 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+const STATIC_CARD = {
+  id: 0,
+  status: "completed",
+  thumbnail: "/cxo_event.jpeg",
+  name: "CXO RoundTable",
+  date: "2026-05-02",
+  location: "Delhi",
+};
+
 type Card = {
   id: number;
   content: ReactNode;
@@ -17,73 +26,33 @@ type Card = {
   status: string;
 };
 
-export const LayoutGrid = ({ cards }: { cards: Card[] }) => {
-  // Match the bento layout in the image:
-  // [ large | tall ]
-  // [ small | wide ]
-  // If less than 5 cards, fallback to normal grid
-  if (cards.length < 5) {
-    return (
-      <div className="w-full h-full p-10 grid grid-cols-1 md:grid-cols-2 max-w-7xl mx-auto gap-6 relative">
-        {cards.map((card, i) => (
-          <BentoCard key={i} card={card} size="normal" />
-        ))}
-      </div>
-    );
-  }
-
-  return (
-    <div
-      className="w-full h-full p-10 grid max-w-7xl mx-auto gap-6 relative"
-      style={{
-        gridTemplateColumns: '2fr 1fr 1fr',
-        gridTemplateRows: '1fr 1fr',
-        gridTemplateAreas: `
-          "large tall tall"
-          "large small wide"
-        `,
-      }}
-    >
-      <BentoCard card={cards[0]} size="large" area="large" />
-      <BentoCard card={cards[1]} size="tall" area="tall" />
-      <BentoCard card={cards[2]} size="small" area="small" />
-      <BentoCard card={cards[3]} size="wide" area="wide" />
-      {/* Render any extra cards as normal below */}
-      {cards.slice(4).map((card, i) => (
-        <BentoCard key={i + 4} card={card} size="normal" />
-      ))}
-    </div>
-  );
-};
-
-function BentoCard({ card, size, area }: { card: Card; size: "large" | "tall" | "small" | "wide" | "normal"; area?: string }) {
+function BentoCard({
+  card,
+  className,
+}: {
+  card: Card;
+  className?: string;
+}) {
   const [hovered, setHovered] = React.useState(false);
-  const base =
-    size === "large"
-      ? "row-span-2 col-span-1 h-[520px] md:h-[520px]"
-      : size === "tall"
-      ? "row-span-2 col-span-1 h-[250px] md:h-[520px]"
-      : size === "small"
-      ? "row-span-1 col-span-1 h-[250px]"
-      : size === "wide"
-      ? "row-span-1 col-span-2 h-[250px]"
-      : "h-[300px]";
+
   return (
     <motion.div
       className={cn(
-        "group relative rounded-3xl overflow-hidden cursor-pointer flex flex-col justify-end bg-white border border-blue-100 transition-all duration-500",
-        base
+        "group relative rounded-3xl overflow-hidden cursor-pointer flex flex-col justify-end bg-white border border-blue-100",
+        className
       )}
-      style={area ? { gridArea: area } : {}}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      whileHover={{ scale: 1.025, boxShadow: "0 8px 40px 0 rgba(30, 64, 175, 0.18)" }}
+      whileHover={{
+        scale: 1.025,
+        boxShadow: "0 8px 40px 0 rgba(30, 64, 175, 0.18)",
+      }}
       transition={{ type: "spring", stiffness: 180, damping: 18 }}
     >
-      {/* Status badge always visible */}
+      {/* Status badge */}
       <span
         className={cn(
-          "absolute top-4 left-4 z-20 px-3 py-1 rounded-full text-xs font-semibold uppercase transition-all duration-500",
+          "absolute top-4 left-4 z-20 px-3 py-1 rounded-full text-xs font-semibold uppercase",
           card.status === "upcoming"
             ? "bg-blue-600 text-white"
             : card.status === "ongoing"
@@ -97,24 +66,26 @@ function BentoCard({ card, size, area }: { card: Card; size: "large" | "tall" | 
       >
         {card.status}
       </span>
-      {/* Event image */}
+
+      {/* Thumbnail */}
       <motion.img
         layoutId={`image-${card.id}-image`}
         src={card.thumbnail}
         height="500"
         width="500"
-        className="object-cover object-top absolute inset-0 h-full w-full transition duration-500"
+        className="object-cover object-top absolute inset-0 h-full w-full"
         alt="thumbnail"
         style={{ zIndex: 1 }}
       />
-      {/* Show details overlay only on hover */}
+
+      {/* Hover overlay */}
       {hovered && (
         <motion.div
           className="absolute inset-0 z-30 flex items-center justify-center bg-blue-700/70 backdrop-blur-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 120, damping: 18 }}
+          transition={{ type: "spring", stiffness: 120, damping: 18 }}
         >
           <div className="text-white w-full text-center p-6">
             {card.content}
@@ -124,6 +95,18 @@ function BentoCard({ card, size, area }: { card: Card; size: "large" | "tall" | 
     </motion.div>
   );
 }
+
+
+function DynamicGrid({ cards }: { cards: Card[] }) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {cards.map((card) => (
+        <BentoCard key={card.id} card={card} className="h-[280px]" />
+      ))}
+    </div>
+  );
+}
+
 
 type EventType = {
   id: number;
@@ -135,10 +118,53 @@ type EventType = {
   image_url?: string;
 };
 
-/**
- * Events section displays a grid of event cards and a Register Now button.
- * @param onRegister Optional callback for Register Now button click.
- */
+function makeCard(event: EventType): Card {
+  return {
+    id: event.id,
+    thumbnail: event.image_url || "/feature1.png",
+    className: "",
+    status: event.status,
+    content: (
+      <div className="text-white">
+        <h3 className="text-xl font-bold mb-2">{event.name}</h3>
+        <div className="flex flex-col gap-1 text-sm">
+          <span>
+            <b>Date:</b> {event.date}
+          </span>
+          {event.time && (
+            <span>
+              <b>Time:</b> {event.time}
+            </span>
+          )}
+          <span>
+            <b>Location:</b> {event.location}
+          </span>
+        </div>
+      </div>
+    ),
+  };
+}
+
+const staticCard: Card = {
+  id: STATIC_CARD.id,
+  thumbnail: STATIC_CARD.thumbnail,
+  className: "",
+  status: STATIC_CARD.status,
+  content: (
+    <div className="text-white">
+      <h3 className="text-3xl font-extrabold mb-3">{STATIC_CARD.name}</h3>
+      <div className="flex flex-col gap-1.5 text-base">
+        <span>
+          <b>Date:</b> {STATIC_CARD.date}
+        </span>
+        <span>
+          <b>Location:</b> {STATIC_CARD.location}
+        </span>
+      </div>
+    </div>
+  ),
+};
+
 export default function Events({ onRegister }: { onRegister?: () => void }) {
   const [events, setEvents] = useState<EventType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -156,7 +182,6 @@ export default function Events({ onRegister }: { onRegister?: () => void }) {
         setLoading(false);
         return;
       }
-      // Sort: upcoming first, then by date ascending
       const sorted = (data || []).sort((a, b) => {
         if (a.status === "upcoming" && b.status !== "upcoming") return -1;
         if (a.status !== "upcoming" && b.status === "upcoming") return 1;
@@ -168,33 +193,30 @@ export default function Events({ onRegister }: { onRegister?: () => void }) {
     fetchEvents();
   }, []);
 
-  if (loading) return <div className="text-center py-10">Loading events...</div>;
-  if (error) return <div className="text-center text-red-500 py-10">{error}</div>;
-  if (!events.length) return <div className="text-center py-10">No events found.</div>;
+  if (loading)
+    return <div className="text-center py-10">Loading events...</div>;
+  if (error)
+    return <div className="text-center text-red-500 py-10">{error}</div>;
+  if (!events.length)
+    return <div className="text-center py-10">No events found.</div>;
 
-  // In the Card mapping, make card.content only the event details (name, date, time, location):
-  const cards: Card[] = events.map((event) => ({
-    id: event.id,
-    thumbnail: event.image_url || "/feature1.png",
-    className: "",
-    status: event.status,
-    content: (
-      <div className="text-white">
-        <h3 className="text-2xl font-bold mb-2">{event.name}</h3>
-        <div className="flex flex-col gap-1 text-base">
-          <span><b>Date:</b> {event.date}</span>
-          {event.time && <span><b>Time:</b> {event.time}</span>}
-          <span><b>Location:</b> {event.location}</span>
-        </div>
-      </div>
-    ),
-  }));
+  const dynamicCards = events.map(makeCard);
 
   return (
     <section className="py-16">
-      <h2 className="text-4xl md:text-4xl font-extrabold text-blue-900 text-center mb-10">Events</h2>
-      <LayoutGrid cards={cards} />
-      <div className="flex justify-center mt-2">
+      <h2 className="text-4xl font-extrabold text-blue-900 text-center mb-10">
+        Events
+      </h2>
+
+      <div className="w-full max-w-7xl mx-auto px-10 flex flex-col gap-6">
+        <BentoCard
+          card={staticCard}
+          className="w-full h-[380px] md:h-[420px]"
+        />
+        <DynamicGrid cards={dynamicCards} />
+      </div>
+
+      <div className="flex justify-center mt-8">
         <button
           className="bg-blue-600 text-white hover:bg-blue-700 rounded-full px-5 py-3 text-base font-semibold shadow-lg transition-all duration-300"
           onClick={() => onRegister && onRegister()}
